@@ -1,0 +1,3 @@
+class BlizzardFlake {
+  BlizzardFlake();
+}
