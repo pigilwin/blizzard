@@ -1,37 +1,31 @@
 import 'dart:html';
-
-import 'BlizzardConfiguration.dart';
 import 'BlizzardFlake.dart';
 
 class Blizzard {
 
-  final BlizzardConfiguration configuration;
+  final int amountOfFlakes = 100;
 
-  bool _isRunning = false;
   List<BlizzardFlake> _flakes;
-  HtmlElement _element;
+  CanvasElement _canvasElement;
+  CanvasRenderingContext2D _canvasRenderingContext2D;
+  int innerWidth = 0;
+  int innerHeight = 0;
   
-  Blizzard(this.configuration){
-    this._element = _setElement();
+  Blizzard(){
+    this.innerHeight = window.innerHeight;
+    this.innerWidth = window.innerWidth;
+    this._attachCanvasToDocumentBody();
   }
 
   void start() {
 
   }
 
-  void stop() {
-
-  }
-
-  HtmlElement _setElement() {
-    String elementId = this.configuration.elementId;
-    if (elementId == null) {
-      return document.body;
-    }
-    HtmlElement element = document.querySelector("#"  + elementId);
-    if (element == null) {
-      element = document.body;
-    }
-    return element;
+  void _attachCanvasToDocumentBody() {
+    this._canvasElement = document.createElement('canvas');
+    this._canvasElement.width = this.innerWidth;
+    this._canvasElement.height = this.innerHeight;
+    this._canvasRenderingContext2D = this._canvasElement.getContext('2d');
+    document.body.append(this._canvasElement);
   }
 }

@@ -19,7 +19,6 @@ class BlizzardFlake {
 
   final double x;
   final double y;
-  final BlizzardConfiguration configuration;
 
   DivElement _flakeElement;
   bool _active = false;
@@ -27,8 +26,7 @@ class BlizzardFlake {
   
   BlizzardFlake({
     this.x,
-    this.y,
-    this.configuration
+    this.y
   }) {
     _flakeElement = document.createElement('div');
     _flakeElement.innerHtml = character;
