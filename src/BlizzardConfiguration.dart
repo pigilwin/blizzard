@@ -5,6 +5,8 @@ class BlizzardConfiguration {
   final bool meltEffect;
   final bool freezeOnBlur;
 
+  final String elementId;
+
   final int maximumFlakes;
   final int maximumFallingFlakes;
   final int animationInterval;
@@ -16,6 +18,7 @@ class BlizzardConfiguration {
     this.freezeOnBlur,
     this.maximumFlakes,
     this.maximumFallingFlakes,
-    this.animationInterval
+    this.animationInterval,
+    this.elementId
   });
 }
