@@ -1,18 +1,21 @@
+import 'dart:html';
+
 import 'BlizzardConfiguration.dart';
+import 'BlizzardFlake.dart';
 
 class Blizzard {
 
   final BlizzardConfiguration configuration;
 
-  bool isRunning = false;
-
-  Blizzard(this.configuration);
-
-  void freeze() {
-
+  bool _isRunning = false;
+  List<BlizzardFlake> _flakes;
+  HtmlElement _element;
+  
+  Blizzard(this.configuration){
+    this._element = _setElement();
   }
 
-  void resume() {
+  void start() {
 
   }
 
@@ -20,7 +23,15 @@ class Blizzard {
 
   }
 
-  void start() {
-
+  HtmlElement _setElement() {
+    String elementId = this.configuration.elementId;
+    if (elementId == null) {
+      return document.body;
+    }
+    HtmlElement element = document.querySelector("#"  + elementId);
+    if (element == null) {
+      element = document.body;
+    }
+    return element;
   }
 }
