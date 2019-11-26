@@ -1,0 +1,8 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "allowJs": false,
+        "outFile": "build/main.js",
+        "target": "esnext"
+    }
+}
