@@ -1,12 +1,14 @@
 class Blizzard {
 
-    private flakeCount: number = 500;
+    private flakeCount: number = 1000;
     private flakes: Array<Flake> = [];
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
     private windowWidth: number = 0;
     private windowHeight: number = 0;
     private loaded: boolean = false;
+    private mouseX: number = -100;
+    private mouseY: number = -100;
 
     public constructor() {
         this.windowHeight = window.innerHeight;
@@ -19,6 +21,7 @@ class Blizzard {
 
         if (!this.loaded) {
             this.load();
+            this.addMouseListener();
         }
     } 
 
@@ -51,11 +54,19 @@ class Blizzard {
         this.loaded = true;
     }
 
+    private addMouseListener(): void {
+        const that: Blizzard = this;
+        this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
+            that.mouseX = e.clientX,
+            that.mouseY = e.clientY
+        });
+    }
+
     /**
      * Scale the canvas to the screen
      * @returns {void}
      */
-    private scaleCanvas(): void {
+    public scaleCanvas(): void {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
     }
@@ -78,10 +89,11 @@ class Blizzard {
             flake.update();
 
             let y: number = flake.getY();
+            let x: number = flake.getX();
             
             this.context.beginPath();
             this.context.arc(
-                flake.getX(),
+                x,
                 y,
                 flake.getWeight(),
                 0,
@@ -168,7 +180,10 @@ class Helpers {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const blizzard: Blizzard = new Blizzard()
+    const blizzard: Blizzard = new Blizzard();
     blizzard.start();
 
+    window.addEventListener('resize', () => {
+        blizzard.scaleCanvas();
+    });
 });
