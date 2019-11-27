@@ -2,7 +2,9 @@
     "compileOnSave": true,
     "compilerOptions": {
         "allowJs": false,
-        "outFile": "build/main.js",
-        "target": "esnext"
+        "target": "es2015",
+        "module": "none",
+        "strict": true,
+        "outDir": "./build"
     }
 }
