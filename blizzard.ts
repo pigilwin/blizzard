@@ -15,8 +15,7 @@ class Blizzard {
         this.windowWidth = window.innerWidth;
         this.canvas = document.createElement('canvas');
         this.context = <CanvasRenderingContext2D> this.canvas.getContext('2d');
-        this.canvas.height = this.windowHeight;
-        this.canvas.width = this.windowWidth;
+        this.setCanvasStyle();
         document.body.appendChild(this.canvas);
 
         if (!this.loaded) {
@@ -111,6 +110,18 @@ class Blizzard {
         requestAnimationFrame(() => {
             this.loop();
         });
+    }
+
+    private setCanvasStyle(): void {
+        this.canvas.height = this.windowHeight;
+        this.canvas.width = this.windowWidth;
+        this.canvas.style.margin = '0';
+        this.canvas.style.padding = '0';
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.touchAction = 'none';
+        this.canvas.style.top = '0';
+        this.canvas.style.left = '0';
+        this.canvas.style.zIndex = '-1';
     }
 
 }
