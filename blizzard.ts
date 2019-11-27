@@ -1,6 +1,6 @@
 class Blizzard {
 
-    private flakeCount: number = 1000;
+    private flakeCount: number;
     private flakes: Array<Flake> = [];
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -10,7 +10,8 @@ class Blizzard {
     private mouseX: number = -100;
     private mouseY: number = -100;
 
-    public constructor() {
+    public constructor(private config: BlizzardConfiguration) {
+        this.flakeCount = this.config.data.flakeCount;
         this.windowHeight = window.innerHeight;
         this.windowWidth = window.innerWidth;
         this.canvas = document.createElement('canvas');
@@ -100,7 +101,7 @@ class Blizzard {
                 2 * Math.PI,
                 false
             );
-            this.context.fillStyle = 'rgba(255, 255, 255, ' + flake.getAlpha() + ')';
+            this.context.fillStyle = this.generateRGBAString(flake.getAlpha());
             this.context.fill();
 
             if (y >= window.innerHeight) {
@@ -111,6 +112,21 @@ class Blizzard {
         requestAnimationFrame(() => {
             this.loop();
         });
+    }
+
+    /**
+     * Generate the RGBA string
+     * @param {number} alpha
+     * @returns {string}
+     */
+    private generateRGBAString(alpha: number): string {
+        const rgba: Array<String>  = [
+            this.config.data.red.toString(),
+            this.config.data.green.toString(),
+            this.config.data.blue.toString(),
+            alpha.toString()
+        ];
+        return 'rgba(' + rgba.join(',') + ')';
     }
 
 }
@@ -178,9 +194,40 @@ class Helpers {
 
 }
 
+interface BlizzardConfigurationItem {
+    flakeCount: number;
+    red: number;
+    green: number;
+    blue: number;
+}
+
+class BlizzardConfiguration {
+
+    private readonly storageKey: string = 'blizzard';
+
+    private readonly default: BlizzardConfigurationItem = {
+        flakeCount: 1000,
+        red: 255,
+        green: 255,
+        blue: 255
+    };
+    public readonly data: BlizzardConfigurationItem; 
+    /**
+     * Create a new configuration instance
+     * @param storage 
+     */
+    public constructor(private storage: Storage) {
+        if (this.storage.getItem(this.storageKey) === null) {
+            this.storage.setItem(this.storageKey, JSON.stringify(this.default));
+        }
+        this.data = <BlizzardConfigurationItem> JSON.parse(this.storage.getItem(this.storageKey) || '');
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    const blizzard: Blizzard = new Blizzard();
+    const blizzard: Blizzard = new Blizzard(new BlizzardConfiguration(window.localStorage));
     blizzard.start();
 
     window.addEventListener('resize', () => {
