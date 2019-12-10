@@ -90,18 +90,12 @@ class Blizzard {
 
             let y: number = flake.getY();
             let x: number = flake.getX();
-            
-            this.context.beginPath();
-            this.context.arc(
-                x,
-                y,
-                flake.getWeight(),
-                0,
-                2 * Math.PI,
-                false
-            );
-            this.context.fillStyle = this.generateRGBAString(flake.getAlpha());
-            this.context.fill();
+
+            if(this.config.data.snowFlakeCharacter.length > 0) {
+                this.drawCharacterFlake(x, y, flake);
+            } else {
+                this.drawStandardFlake(x, y, flake);
+            }
 
             if (y >= window.innerHeight) {
                 flake.removeWeightFromY();
@@ -139,7 +133,39 @@ class Blizzard {
         this.canvas.style.left = '0';
         this.canvas.style.zIndex = '-1';
     }
-
+    /**
+     * Draw a flake
+     * @param x 
+     * @param y 
+     * @param flake
+     * @return {void}
+     */
+    private drawStandardFlake(x: number, y: number, flake: Flake): void
+    {
+        this.context.beginPath();
+        this.context.arc(
+            x,
+            y,
+            flake.getWeight(),
+            0,
+            2 * Math.PI,
+            false
+        );
+        this.context.fillStyle = this.generateRGBAString(flake.getAlpha());
+        this.context.fill();
+    }
+    /**
+     * Draw a character
+     * @param x 
+     * @param y 
+     * @param flake 
+     * @returns {void}
+     */
+    private drawCharacterFlake(x: number, y: number, flake: Flake): void
+    {
+        this.context.font = '2em serif';
+        this.context.fillText(this.config.data.snowFlakeCharacter, x, y);
+    }
 }
 
 class Flake {
@@ -210,6 +236,7 @@ interface BlizzardConfigurationItem {
     red: number;
     green: number;
     blue: number;
+    snowFlakeCharacter: string;
 }
 
 class BlizzardConfiguration {
@@ -220,7 +247,8 @@ class BlizzardConfiguration {
         flakeCount: 1000,
         red: 255,
         green: 255,
-        blue: 255
+        blue: 255,
+        snowFlakeCharacter: ''
     };
     public readonly data: BlizzardConfigurationItem; 
     /**
