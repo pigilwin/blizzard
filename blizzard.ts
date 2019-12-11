@@ -91,7 +91,7 @@ class Blizzard {
             let y: number = flake.getY();
             let x: number = flake.getX();
 
-            if(this.config.data.snowFlakeCharacter.length > 0) {
+            if(this.config.data.flakeCharacter.length > 0) {
                 this.drawCharacterFlake(x, y, flake);
             } else {
                 this.drawStandardFlake(x, y, flake);
@@ -164,7 +164,7 @@ class Blizzard {
     private drawCharacterFlake(x: number, y: number, flake: Flake): void
     {
         this.context.font = '2em serif';
-        this.context.fillText(this.config.data.snowFlakeCharacter, x, y);
+        this.context.fillText(this.config.data.flakeCharacter, x, y);
     }
 }
 
@@ -221,7 +221,14 @@ class Flake {
 
 class Helpers {
 
-    static random(min: number, max: number, round: boolean): number {
+    /**
+     * Create a random number
+     * @param {number} min 
+     * @param {number} max 
+     * @param {boolean} round
+     * @returns {number}
+     */
+    public static random(min: number, max: number, round: boolean): number {
         let generatedNumber: number = Math.random() * (max - min + 1) + 1;
         if (round) {
             return Math.floor(generatedNumber);
@@ -233,10 +240,12 @@ class Helpers {
 
 interface BlizzardConfigurationItem {
     flakeCount: number;
+    windSpeed: number;
     red: number;
     green: number;
     blue: number;
-    snowFlakeCharacter: string;
+    flakeCharacter: string;
+    avoidMouse: boolean;
 }
 
 class BlizzardConfiguration {
@@ -248,7 +257,9 @@ class BlizzardConfiguration {
         red: 255,
         green: 255,
         blue: 255,
-        snowFlakeCharacter: ''
+        flakeCharacter: '',
+        windSpeed: 5,
+        avoidMouse: false
     };
     public readonly data: BlizzardConfigurationItem; 
     /**
@@ -256,7 +267,12 @@ class BlizzardConfiguration {
      * @param storage 
      */
     public constructor(private storage: Storage) {
-        if (this.storage.getItem(this.storageKey) === null) {
+        let data: string = this.storage.getItem(this.storageKey) || '';
+        let parsedData: BlizzardConfigurationItem = this.default;
+        if(data.length > 0) {
+            parsedData = <BlizzardConfigurationItem> JSON.parse(data);
+        }
+        if(Object.keys(this.default).length !== Object.keys(parsedData).length) {
             this.storage.setItem(this.storageKey, JSON.stringify(this.default));
         }
         this.data = <BlizzardConfigurationItem> JSON.parse(this.storage.getItem(this.storageKey) || '');
