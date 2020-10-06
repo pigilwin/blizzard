@@ -8,7 +8,8 @@
   "scripts": {
     "build": "rollup -c",
     "test": "parcel index.html",
-    "clean": "rm -rf dist && rm -rf .cache"
+    "clean": "rm -rf dist && rm -rf .cache",
+    "lint": "eslint src/ --ext .ts"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,9 @@
   },
   "homepage": "https://gitlab.com/pigilwin/blizzard#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.10.0",
     "rollup": "^2.28.2",
     "rollup-plugin-typescript2": "^0.27.3",
     "typescript": "^4.0.3"
