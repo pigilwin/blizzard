@@ -8,7 +8,6 @@ class Blizzard {
     private windowHeight: number = 0;
     private loaded: boolean = false;
     private mouseX: number = -100;
-    private mouseY: number = -100;
 
     public constructor(private config: BlizzardConfiguration) {
         this.flakeCount = this.config.data.flakeCount;
@@ -21,7 +20,6 @@ class Blizzard {
 
         if (!this.loaded) {
             this.load();
-            this.addMouseListener();
         }
     } 
 
@@ -54,14 +52,6 @@ class Blizzard {
         this.loaded = true;
     }
 
-    private addMouseListener(): void {
-        const that: Blizzard = this;
-        this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
-            that.mouseX = e.clientX,
-            that.mouseY = e.clientY
-        });
-    }
-
     /**
      * Scale the canvas to the screen
      * @returns {void}
@@ -69,6 +59,15 @@ class Blizzard {
     public scaleCanvas(): void {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+    }
+
+    /**
+     * Apply a mouse event to the blizzard instance
+     * @param {MouseEvent} e
+     * @returns {void} 
+     */
+    public applyMouseEvent(e: MouseEvent): void {
+        this.mouseX = e.clientX;
     }
 
     /**
@@ -287,5 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', () => {
         blizzard.scaleCanvas();
+    });
+    window.addEventListener('mousemove', (e: MouseEvent) => {
+        blizzard.applyMouseEvent(e);
     });
 });
