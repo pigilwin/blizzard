@@ -21,6 +21,5 @@ export default {
         typescript({
           typescript: require('typescript'),
         }),
-      ],
-    }
+    ],
 }
