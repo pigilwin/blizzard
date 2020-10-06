@@ -1,25 +1,24 @@
-import typescript from 'rollup-plugin-typescript2';
+import typescriptPlugin from 'rollup-plugin-typescript2';
 import pkg from './package.json';
+import typescript from 'typescript';
 
 export default {
     input: 'src/index.ts',
     output: [
         {
             file: pkg.main,
-            format: 'cjs',
+            format: 'iife',
+            name: 'Blizzard'
         },
         {
             file: pkg.module,
             format: 'es',
+            name: 'Blizzard'
         },
     ],
-    external: [
-        ...Object.keys(pkg.dependencies || {}),
-        ...Object.keys(pkg.peerDependencies || {}),
-    ],
     plugins: [
-        typescript({
-          typescript: require('typescript'),
+        typescriptPlugin({
+          typescript: typescript,
         }),
-    ],
-}
+    ]
+};
