@@ -1,10 +1,17 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "allowJs": false,
-        "target": "es2015",
-        "module": "none",
-        "strict": true,
-        "outDir": "./build"
-    }
+        "declaration": true,
+        "declarationDir": "./dist",
+        "module": "es6",
+        "target": "ES5",
+        "noImplicitAny": true,
+        "outDir": "./dist",
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

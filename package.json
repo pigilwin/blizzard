@@ -2,9 +2,12 @@
   "name": "blizzard",
   "version": "1.0.0",
   "description": "A library to load blizzards over the page",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "test"
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "repository": {
     "type": "git",
