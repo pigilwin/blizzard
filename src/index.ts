@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         red: 255,
         green: 255,
         blue: 255,
-        flakeCharacter: '',
+        flakeCharacter: '❄',
         windSpeed: 5,
         avoidMouse: false
     });
