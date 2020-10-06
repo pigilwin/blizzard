@@ -7,7 +7,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "test": "parcel index.html"
+    "test": "parcel index.html",
+    "clean": "rm -rf dist && rm -rf .cache"
   },
   "repository": {
     "type": "git",
