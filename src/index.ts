@@ -1,3 +1,5 @@
+import {BlizzardConfigurationItem} from './types';
+
 class Blizzard {
 
     private flakeCount: number;
@@ -9,8 +11,8 @@ class Blizzard {
     private loaded: boolean = false;
     private mouseX: number = -100;
 
-    public constructor(private config: BlizzardConfiguration) {
-        this.flakeCount = this.config.data.flakeCount;
+    public constructor(private config: BlizzardConfigurationItem) {
+        this.flakeCount = this.config.flakeCount;
         this.windowHeight = window.innerHeight;
         this.windowWidth = window.innerWidth;
         this.canvas = document.createElement('canvas');
@@ -90,7 +92,7 @@ class Blizzard {
             let y: number = flake.getY();
             let x: number = flake.getX();
 
-            if(this.config.data.flakeCharacter.length > 0) {
+            if(this.config.flakeCharacter.length > 0) {
                 this.drawCharacterFlake(x, y, flake);
             } else {
                 this.drawStandardFlake(x, y, flake);
@@ -113,9 +115,9 @@ class Blizzard {
      */
     private generateRGBAString(alpha: number): string {
         const rgba: Array<String>  = [
-            this.config.data.red.toString(),
-            this.config.data.green.toString(),
-            this.config.data.blue.toString(),
+            this.config.red.toString(),
+            this.config.green.toString(),
+            this.config.blue.toString(),
             alpha.toString()
         ];
         return 'rgba(' + rgba.join(',') + ')';
@@ -163,7 +165,7 @@ class Blizzard {
     private drawCharacterFlake(x: number, y: number, flake: Flake): void
     {
         this.context.font = '2em serif';
-        this.context.fillText(this.config.data.flakeCharacter, x, y);
+        this.context.fillText(this.config.flakeCharacter, x, y);
     }
 }
 
@@ -237,21 +239,9 @@ class Helpers {
 
 }
 
-interface BlizzardConfigurationItem {
-    flakeCount: number;
-    windSpeed: number;
-    red: number;
-    green: number;
-    blue: number;
-    flakeCharacter: string;
-    avoidMouse: boolean;
-}
+document.addEventListener('DOMContentLoaded', () => {
 
-class BlizzardConfiguration {
-
-    private readonly storageKey: string = 'blizzard';
-
-    private readonly default: BlizzardConfigurationItem = {
+    const blizzard: Blizzard = new Blizzard({
         flakeCount: 1000,
         red: 255,
         green: 255,
@@ -259,29 +249,7 @@ class BlizzardConfiguration {
         flakeCharacter: '',
         windSpeed: 5,
         avoidMouse: false
-    };
-    public readonly data: BlizzardConfigurationItem; 
-    /**
-     * Create a new configuration instance
-     * @param storage 
-     */
-    public constructor(private storage: Storage) {
-        let data: string = this.storage.getItem(this.storageKey) || '';
-        let parsedData: BlizzardConfigurationItem = this.default;
-        if(data.length > 0) {
-            parsedData = <BlizzardConfigurationItem> JSON.parse(data);
-        }
-        if(Object.keys(this.default).length !== Object.keys(parsedData).length) {
-            this.storage.setItem(this.storageKey, JSON.stringify(this.default));
-        }
-        this.data = <BlizzardConfigurationItem> JSON.parse(this.storage.getItem(this.storageKey) || '');
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const blizzard: Blizzard = new Blizzard(new BlizzardConfiguration(window.localStorage));
+    });
     blizzard.start();
 
     window.addEventListener('resize', () => {
