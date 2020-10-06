@@ -1,15 +1,15 @@
 import {BlizzardConfigurationItem} from './types';
 
-class Blizzard {
+export default class Blizzard {
 
     private flakeCount: number;
     private flakes: Array<Flake> = [];
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
-    private windowWidth: number = 0;
-    private windowHeight: number = 0;
-    private loaded: boolean = false;
-    private mouseX: number = -100;
+    private windowWidth = 0;
+    private windowHeight = 0;
+    private loaded = false;
+    private mouseX = -100;
 
     public constructor(private config: BlizzardConfigurationItem) {
         this.flakeCount = this.config.flakeCount;
@@ -46,8 +46,8 @@ class Blizzard {
         let i: number = this.flakeCount;
 
         while(i--) {
-            let x: number = Helpers.random(0, this.windowWidth, true);
-            let y: number = Helpers.random(0, this.windowHeight, true);
+            const x: number = Helpers.random(0, this.windowWidth, true);
+            const y: number = Helpers.random(0, this.windowHeight, true);
             this.flakes.push(new Flake(x, y));
         }
 
@@ -89,11 +89,11 @@ class Blizzard {
             const flake: Flake = this.flakes[i];
             flake.update();
 
-            let y: number = flake.getY();
-            let x: number = flake.getX();
+            const y: number = flake.getY();
+            const x: number = flake.getX();
 
             if(this.config.flakeCharacter.length > 0) {
-                this.drawCharacterFlake(x, y, flake);
+                this.drawCharacterFlake(x, y);
             } else {
                 this.drawStandardFlake(x, y, flake);
             }
@@ -114,7 +114,7 @@ class Blizzard {
      * @returns {string}
      */
     private generateRGBAString(alpha: number): string {
-        const rgba: Array<String>  = [
+        const rgba: Array<string>  = [
             this.config.red.toString(),
             this.config.green.toString(),
             this.config.blue.toString(),
@@ -162,7 +162,7 @@ class Blizzard {
      * @param flake 
      * @returns {void}
      */
-    private drawCharacterFlake(x: number, y: number, flake: Flake): void
+    private drawCharacterFlake(x: number, y: number): void
     {
         this.context.font = '2em serif';
         this.context.fillText(this.config.flakeCharacter, x, y);
@@ -230,32 +230,10 @@ class Helpers {
      * @returns {number}
      */
     public static random(min: number, max: number, round: boolean): number {
-        let generatedNumber: number = Math.random() * (max - min + 1) + 1;
+        const generatedNumber: number = Math.random() * (max - min + 1) + 1;
         if (round) {
             return Math.floor(generatedNumber);
         }
         return generatedNumber; 
     }
-
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const blizzard: Blizzard = new Blizzard({
-        flakeCount: 1000,
-        red: 255,
-        green: 255,
-        blue: 255,
-        flakeCharacter: '❄',
-        windSpeed: 5,
-        avoidMouse: false
-    });
-    blizzard.start();
-
-    window.addEventListener('resize', () => {
-        blizzard.scaleCanvas();
-    });
-    window.addEventListener('mousemove', (e: MouseEvent) => {
-        blizzard.applyMouseEvent(e);
-    });
-});

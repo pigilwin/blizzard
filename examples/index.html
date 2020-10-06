@@ -14,5 +14,26 @@
   </head>
   <body>
     <script src="../dist/index.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const blizzardInstance = new Blizzard({
+            flakeCount: 1000,
+            red: 255,
+            green: 255,
+            blue: 255,
+            flakeCharacter: '❄',
+            windSpeed: 5,
+            avoidMouse: false
+        });
+        blizzardInstance.start();
+
+        window.addEventListener('resize', () => {
+            blizzardInstance.scaleCanvas();
+        });
+        window.addEventListener('mousemove', (e) => {
+            blizzardInstance.applyMouseEvent(e);
+        });
+      });
+    </script>
   </body>
 </html>
