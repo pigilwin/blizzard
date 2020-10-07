@@ -92,11 +92,7 @@ export default class Blizzard {
             const y: number = flake.getY();
             const x: number = flake.getX();
 
-            if(this.config.flakeCharacter.length > 0) {
-                this.drawCharacterFlake(x, y);
-            } else {
-                this.drawStandardFlake(x, y, flake);
-            }
+            this.drawCharacterFlake(x, y);
 
             if (y >= window.innerHeight) {
                 flake.removeWeightFromY();
@@ -106,21 +102,6 @@ export default class Blizzard {
         requestAnimationFrame(() => {
             this.loop();
         });
-    }
-
-    /**
-     * Generate the RGBA string
-     * @param {number} alpha
-     * @returns {string}
-     */
-    private generateRGBAString(alpha: number): string {
-        const rgba: Array<string>  = [
-            this.config.red.toString(),
-            this.config.green.toString(),
-            this.config.blue.toString(),
-            alpha.toString()
-        ];
-        return 'rgba(' + rgba.join(',') + ')';
     }
     
     private setCanvasStyle(): void {
@@ -134,27 +115,7 @@ export default class Blizzard {
         this.canvas.style.left = '0';
         this.canvas.style.zIndex = '-1';
     }
-    /**
-     * Draw a flake
-     * @param x 
-     * @param y 
-     * @param flake
-     * @return {void}
-     */
-    private drawStandardFlake(x: number, y: number, flake: Flake): void
-    {
-        this.context.beginPath();
-        this.context.arc(
-            x,
-            y,
-            flake.getWeight(),
-            0,
-            2 * Math.PI,
-            false
-        );
-        this.context.fillStyle = this.generateRGBAString(flake.getAlpha());
-        this.context.fill();
-    }
+
     /**
      * Draw a character
      * @param x 
