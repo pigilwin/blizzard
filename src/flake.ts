@@ -13,6 +13,11 @@ export class Flake {
     private weight: number;
     private speed: number;
 
+    /**
+     * Create a new flake
+     * @param x
+     * @param y 
+     */
     public constructor(x: number, y: number){
         this._x = x;
         this._y = y;
