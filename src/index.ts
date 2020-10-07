@@ -3,11 +3,17 @@ import {Helpers} from './helpers';
 import {Flake} from './flake';
 import {Canvas} from './canvas';
 
+enum Direction {LEFT, RIGHT}
+
 export default class Blizzard {
+
+    private readonly spacer: number = 50;
 
     private configuration: BlizzardConfigurationItem;
     private canvas: Canvas;
     private flakes: Array<Flake> = [];
+    private direction: Direction = Direction.LEFT;
+    private mouseMovementX = 0;
 
     /**
      * Create a new blizzard
@@ -57,7 +63,12 @@ export default class Blizzard {
      * @returns {void} 
      */
     public applyMouseEvent(e: MouseEvent): void {
-        //this.mouseX = e.clientX;
+        if (e.pageX < this.mouseMovementX) {
+            this.direction = Direction.LEFT;
+        } else if (e.pageX > this.mouseMovementX) {
+            this.direction = Direction.RIGHT;
+        }
+        this.mouseMovementX = e.pageX;
     }
 
     /**
@@ -77,12 +88,22 @@ export default class Blizzard {
             const flake: Flake = this.flakes[i];
             flake.update();
 
-            const y: number = flake.getY();
-            const x: number = flake.getX();
+            const y: number = flake.y;
+            let x: number = flake.x;
+
+            if (!this.configuration.avoidMouse) {
+                if (x >= (this.mouseMovementX - this.spacer)) {
+                    x = x - this.spacer;
+                }
+
+                if (x <= (this.mouseMovementX + this.spacer)) {
+                    x = x + this.spacer;
+                }
+            }
 
             this.drawCharacterFlake(x, y);
 
-            if (y >= window.innerHeight) {
+            if (y >= this.canvas.height) {
                 flake.removeWeightFromY();
             }
         }

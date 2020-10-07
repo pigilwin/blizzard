@@ -6,16 +6,16 @@ export class Flake {
     private readonly maxSpeed: number = 3;
     private readonly step: number = 0.01;
 
-    private x: number;
-    private y: number;
+    private _x: number;
+    private _y: number;
     private radius: number;
     private area: number;
     private weight: number;
     private speed: number;
 
     public constructor(x: number, y: number){
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         this.radius = Helpers.random(0, 1, false);
         this.area = Helpers.random(0, Math.PI, false);
         this.weight = Helpers.random(2, this.maxWeight, false);
@@ -23,20 +23,20 @@ export class Flake {
     }
 
     public update(): void {
-        this.x += Math.cos(this.area) * this.radius;
+        this._x += Math.cos(this.area) * this.radius;
         this.area += this.step;
-        this.y += this.speed;
+        this._y += this.speed;
     }
 
     public removeWeightFromY(): void {
-        this.y = -this.weight;
+        this._y = -this.weight;
     }
 
-    public getX(): number {
-        return this.x;
+    public get x(): number {
+        return this._x;
     }
 
-    public getY(): number {
-        return this.y;
+    public get y(): number {
+        return this._y;
     }
 }
