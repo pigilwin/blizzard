@@ -4,7 +4,7 @@
         "declaration": true,
         "declarationDir": "./dist",
         "module": "es6",
-        "target": "ES5",
+        "target": "ESNext",
         "noImplicitAny": true,
         "outDir": "./dist",
     },
