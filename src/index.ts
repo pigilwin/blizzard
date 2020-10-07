@@ -3,8 +3,7 @@ import {Helpers} from './helpers';
 import {Flake} from './flake';
 
 export default class Blizzard {
-
-    private flakeCount: number;
+    private configuration: BlizzardConfigurationItem;
     private flakes: Array<Flake> = [];
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -13,8 +12,8 @@ export default class Blizzard {
     private loaded = false;
     private mouseX = -100;
 
-    public constructor(private config: BlizzardConfigurationItem) {
-        this.flakeCount = this.config.flakeCount;
+    public constructor(private config: BlizzardConfigurationItem = {}) {
+        this.configuration = Object.assign(this.defaultConfiguration(), config);
         this.windowHeight = window.innerHeight;
         this.windowWidth = window.innerWidth;
         this.canvas = document.createElement('canvas');
@@ -45,7 +44,7 @@ export default class Blizzard {
             return;
         }
 
-        let i: number = this.flakeCount;
+        let i: number = this.configuration.flakeCount;
 
         while(i--) {
             const x: number = Helpers.random(0, this.windowWidth, true);
@@ -128,6 +127,20 @@ export default class Blizzard {
     private drawCharacterFlake(x: number, y: number): void
     {
         this.context.font = '2em serif';
-        this.context.fillText(this.config.flakeCharacter, x, y);
+        this.context.fillText(this.configuration.flakeCharacter, x, y);
+    }
+
+    /**
+     * Fetch the default blizzard configuration item
+     * @returns {BlizzardConfigurationItem}
+     */
+    private defaultConfiguration(): BlizzardConfigurationItem
+    {
+        return {
+            flakeCount: 100,
+            flakeCharacter: '❄️',
+            windSpeed: 5,
+            avoidMouse: false
+        };
     }
 }
