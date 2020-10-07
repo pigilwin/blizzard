@@ -16,12 +16,7 @@
     <script src="../dist/index.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const blizzardInstance = new Blizzard({
-            flakeCount: 100,
-            flakeCharacter: '❄️',
-            windSpeed: 5,
-            avoidMouse: false
-        });
+        const blizzardInstance = new Blizzard();
         blizzardInstance.start();
 
         window.addEventListener('resize', () => {
