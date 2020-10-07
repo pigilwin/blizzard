@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "test": "rollup -cw",
+    "watch": "rollup -cw",
     "clean": "rm -rf dist && rm -rf .cache",
     "lint": "eslint src/ --ext .ts"
   },
