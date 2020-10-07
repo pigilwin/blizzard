@@ -42,9 +42,10 @@ export default class Blizzard {
         let i: number = this.configuration.flakeCount;
 
         while(i--) {
-            const x: number = Helpers.random(0, this.canvas.width, true);
-            const y: number = Helpers.random(0, this.canvas.width, true);
-            this.flakes.push(new Flake(x, y));
+            this.flakes.push(new Flake(
+                Helpers.random(0, this.canvas.width, true), 
+                this.canvas.height
+            ));
         }
     }
 
@@ -93,11 +94,11 @@ export default class Blizzard {
 
             if (!this.configuration.avoidMouse) {
                 if (x >= (this.mouseMovementX - this.spacer)) {
-                    x = x - this.spacer;
+                    x -= this.spacer;
                 }
 
                 if (x <= (this.mouseMovementX + this.spacer)) {
-                    x = x + this.spacer;
+                    x += this.spacer;
                 }
             }
 
