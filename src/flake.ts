@@ -3,15 +3,14 @@ import {Helpers} from './helpers';
 export class Flake {
     
     private readonly maxWeight: number = 5;
-    private readonly maxSpeed: number = 3;
+    private readonly maxGravity: number = 3;
     private readonly step: number = 0.01;
 
     private _x: number;
     private _y: number;
-    private radius: number;
-    private area: number;
+    private wind: number;
     private weight: number;
-    private speed: number;
+    private gravity: number;
 
     /**
      * Create a new flake
@@ -21,20 +20,19 @@ export class Flake {
     public constructor(x: number, y: number){
         this._x = x;
         this._y = y;
-        this.radius = Helpers.random(0, 1, false);
-        this.area = Helpers.random(0, Math.PI, false);
+        this.wind = Helpers.random(0, Math.PI, false);
         this.weight = Helpers.random(2, this.maxWeight, false);
-        this.speed = (this.weight / this.maxWeight) * this.maxSpeed;
+        this.gravity = (this.weight / this.maxWeight) * this.maxGravity;
     }
 
     public update(): void {
-        this._x += Math.cos(this.area) * this.radius;
-        this.area += this.step;
-        this._y += this.speed;
+        this._x += Math.cos(this.wind) + Math.sin(this.wind);//Calculate the next random position
+        this.wind += this.step;
+        this._y += this.gravity;
     }
-
-    public removeWeightFromY(): void {
-        this._y = -this.weight;
+    
+    public resetFlakeToTop(): void {
+        this._y = 0;
     }
 
     public get x(): number {

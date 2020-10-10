@@ -44,7 +44,7 @@ export default class Blizzard {
         while(i--) {
             this.flakes.push(new Flake(
                 Helpers.random(0, this.canvas.width, true), 
-                this.canvas.height
+                0
             ));
         }
     }
@@ -90,8 +90,9 @@ export default class Blizzard {
             flake.update();
 
             const y: number = flake.y;
-            let x: number = flake.x;
+            const x: number = flake.x;
 
+            /**
             if (!this.configuration.avoidMouse) {
                 if (x >= (this.mouseMovementX - this.spacer)) {
                     x -= this.spacer;
@@ -101,11 +102,12 @@ export default class Blizzard {
                     x += this.spacer;
                 }
             }
+            */
 
             this.drawCharacterFlake(x, y);
 
             if (y >= this.canvas.height) {
-                flake.removeWeightFromY();
+                flake.resetFlakeToTop();
             }
         }
 
@@ -122,6 +124,7 @@ export default class Blizzard {
      */
     private drawCharacterFlake(x: number, y: number): void
     {
+        //console.log(x, y);
         this.canvas.context.font = '2em serif';
         this.canvas.context.fillText(this.configuration.flakeCharacter, x, y);
     }
