@@ -2,18 +2,15 @@ import {BlizzardConfigurationItem} from './types';
 import {Helpers} from './helpers';
 import {Flake} from './flake';
 import {Canvas} from './canvas';
-
-enum Direction {LEFT, RIGHT}
+import { Wind } from './wind';
 
 export default class Blizzard {
 
-    private readonly spacer: number = 50;
+    public readonly canvas: Canvas;
+    public readonly wind: Wind;
 
     private configuration: BlizzardConfigurationItem;
-    private canvas: Canvas;
     private flakes: Array<Flake> = [];
-    private direction: Direction = Direction.LEFT;
-    private mouseMovementX = 0;
 
     /**
      * Create a new blizzard
@@ -22,6 +19,7 @@ export default class Blizzard {
     public constructor(config: BlizzardConfigurationItem = {}) {
         this.configuration = Object.assign(this.defaultConfiguration(), config);
         this.canvas = new Canvas(window.innerHeight, window.innerWidth);
+        this.wind = new Wind();
         this.load();
     } 
 
@@ -56,20 +54,6 @@ export default class Blizzard {
     public scaleCanvas(): void {
         this.canvas.height = window.innerHeight;
         this.canvas.width = window.innerWidth;
-    }
-
-    /**
-     * Apply a mouse event to the blizzard instance
-     * @param {MouseEvent} e
-     * @returns {void} 
-     */
-    public applyMouseEvent(e: MouseEvent): void {
-        if (e.pageX < this.mouseMovementX) {
-            this.direction = Direction.LEFT;
-        } else if (e.pageX > this.mouseMovementX) {
-            this.direction = Direction.RIGHT;
-        }
-        this.mouseMovementX = e.pageX;
     }
 
     /**
