@@ -9,7 +9,6 @@ export class Flake {
     private _x: number;
     private _y: number;
     private wind: number;
-    private weight: number;
     private gravity: number;
 
     /**
@@ -21,8 +20,7 @@ export class Flake {
         this._x = x;
         this._y = y;
         this.wind = Helpers.random(0, Math.PI, false);
-        this.weight = Helpers.random(2, this.maxWeight, false);
-        this.gravity = (this.weight / this.maxWeight) * this.maxGravity;
+        this.gravity = (Helpers.random(2, this.maxWeight, false) / this.maxWeight) * this.maxGravity;
     }
 
     public update(): void {
