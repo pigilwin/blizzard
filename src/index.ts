@@ -1,4 +1,3 @@
-import {BlizzardConfigurationItem} from './types';
 import {Helpers} from './helpers';
 import {Flake} from './flake';
 import {Canvas} from './canvas';
@@ -76,17 +75,9 @@ export default class Blizzard {
             const y: number = flake.y;
             const x: number = flake.x;
 
-            /**
             if (!this.configuration.avoidMouse) {
-                if (x >= (this.mouseMovementX - this.spacer)) {
-                    x -= this.spacer;
-                }
-
-                if (x <= (this.mouseMovementX + this.spacer)) {
-                    x += this.spacer;
-                }
+                this.wind.updateFlake(flake);
             }
-            */
 
             this.drawCharacterFlake(x, y);
 
@@ -108,7 +99,6 @@ export default class Blizzard {
      */
     private drawCharacterFlake(x: number, y: number): void
     {
-        //console.log(x, y);
         this.canvas.context.font = '2em serif';
         this.canvas.context.fillText(this.configuration.flakeCharacter, x, y);
     }
@@ -126,4 +116,26 @@ export default class Blizzard {
             avoidMouse: false
         };
     }
+}
+
+export interface BlizzardConfigurationItem {
+    /**
+     * How many flakes should be shown on the page at one time
+     */
+    flakeCount?: number;
+
+    /**
+     * What is the virtual wind speed of the application
+     */
+    windSpeed?: number;
+
+    /**
+     * What character should be shown when displaying the flake
+     */
+    flakeCharacter?: string;
+
+    /**
+     * Should the snow flakes react to the mouse
+     */
+    avoidMouse?: boolean;
 }

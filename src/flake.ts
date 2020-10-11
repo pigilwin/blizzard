@@ -37,6 +37,11 @@ export class Flake {
         return this._x;
     }
 
+    public set x(x: number)
+    {
+        this._x = x;
+    }
+
     public get y(): number {
         return this._y;
     }

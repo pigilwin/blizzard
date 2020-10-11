@@ -1,6 +1,10 @@
+import { Flake } from "./flake";
+
 enum Direction {LEFT, RIGHT}
 
 export class Wind {
+    private readonly spacer = 50;
+
     private direction: Direction = Direction.LEFT;
     private mouseMovementX = 0;
 
@@ -16,5 +20,19 @@ export class Wind {
             this.direction = Direction.RIGHT;
         }
         this.mouseMovementX = e.pageX;
+    }
+
+    public updateFlake(flake: Flake): void {
+        let x = Math.round(flake.x);
+        
+        if (this.direction === Direction.LEFT) {
+            x += 1;
+        }
+
+        if (this.direction === Direction.RIGHT) {
+            x-= 1;
+        }
+ 
+        flake.x = x;
     }
 }
