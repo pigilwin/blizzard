@@ -25,14 +25,26 @@ export class Wind {
     public updateFlake(flake: Flake): void {
         let x = Math.round(flake.x);
         
-        if (this.direction === Direction.LEFT) {
+        if (this.direction === Direction.LEFT && this.mouseIsNearFlake(x)) {
             x += 1;
         }
 
-        if (this.direction === Direction.RIGHT) {
+        if (this.direction === Direction.RIGHT && this.mouseIsNearFlake(x)) {
             x-= 1;
         }
  
         flake.x = x;
+    }
+
+    /**
+     * Is the mouse near the flake
+     * @param {number} x
+     * @return {boolean} 
+     */
+    private mouseIsNearFlake(x: number): boolean
+    {
+        const mouseX = this.mouseMovementX;
+        const xWithAppliedSpacer = x - this.spacer;
+        return (mouseX - xWithAppliedSpacer) * (mouseX - x) <= 0;
     }
 }
