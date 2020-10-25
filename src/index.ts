@@ -37,11 +37,20 @@ export default class Blizzard {
      */
     private load(): void {
         let i: number = this.configuration.flakeCount;
+        const possibleCharacters: Array<string> = this.configuration.flakeCharacters;
 
         while(i--) {
+            
+            let character: string = this.configuration.flakeCharacter;
+            if (possibleCharacters.length > 0) {
+                const index: number = Helpers.random(0, possibleCharacters.length - 1, true);
+                character = possibleCharacters[index];
+            }
+
             this.flakes.push(new Flake(
                 Helpers.random(0, this.canvas.width, true), 
-                0
+                0,
+                character
             ));
         }
     }
@@ -79,7 +88,7 @@ export default class Blizzard {
                 this.wind.updateFlake(flake);
             }
 
-            this.drawCharacterFlake(x, y);
+            this.drawCharacterFlake(x, y, flake.character);
 
             if (y >= this.canvas.height) {
                 flake.resetFlakeToTop();
@@ -95,12 +104,13 @@ export default class Blizzard {
      * Draw a character
      * @param {number} x 
      * @param {number} y
+     * @param {string} character
      * @returns {void}
      */
-    private drawCharacterFlake(x: number, y: number): void
+    private drawCharacterFlake(x: number, y: number, character: string): void
     {
         this.canvas.context.font = '2em serif';
-        this.canvas.context.fillText(this.configuration.flakeCharacter, x, y);
+        this.canvas.context.fillText(character, x, y);
     }
 
     /**
@@ -112,6 +122,7 @@ export default class Blizzard {
         return {
             flakeCount: 100,
             flakeCharacter: '❄️',
+            flakeCharacters: ['❄️','🍻'],
             windSpeed: 5,
             avoidMouse: false
         };
@@ -133,6 +144,11 @@ export interface BlizzardConfigurationItem {
      * What character should be shown when displaying the flake
      */
     flakeCharacter?: string;
+
+    /**
+     * What characters should be shown at random
+     */
+    flakeCharacters?: Array<string>;
 
     /**
      * Should the snow flakes react to the mouse
