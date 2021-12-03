@@ -1,4 +1,4 @@
-import {Helpers} from './helpers';
+import {random} from './helpers';
 
 export class Flake {
     
@@ -8,7 +8,6 @@ export class Flake {
 
     private _x: number;
     private _y: number;
-    private _character: string;
     private wind: number;
     private gravity: number;
 
@@ -17,12 +16,11 @@ export class Flake {
      * @param x
      * @param y 
      */
-    public constructor(x: number, y: number, character: string){
+    public constructor(x: number, y: number){
         this._x = x;
         this._y = y;
-        this._character = character;
-        this.wind = Helpers.random(0, Math.PI, false);
-        this.gravity = (Helpers.random(1, this.maxWeight, false) / this.maxWeight) * this.maxGravity;
+        this.wind = random(0, Math.PI, false);
+        this.gravity = (random(1, this.maxWeight, false) / this.maxWeight) * this.maxGravity;
     }
 
     public update(): void {
@@ -46,9 +44,5 @@ export class Flake {
 
     public get y(): number {
         return this._y;
-    }
-
-    public get character(): string {
-        return this._character;
     }
 }

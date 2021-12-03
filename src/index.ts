@@ -1,4 +1,4 @@
-import {Helpers} from './helpers';
+import {random} from './helpers';
 import {Flake} from './flake';
 import {Canvas} from './canvas';
 import { Wind } from './wind';
@@ -35,23 +35,10 @@ export default class Blizzard {
      * Load the flakes into the instance
      * @returns {void}
      */
-    private load(): void {
-        let i: number = this.configuration.flakeCount;
-        const possibleCharacters: Array<string> = this.configuration.flakeCharacters;
-
-        while(i--) {
-            
-            let character: string = this.configuration.flakeCharacter;
-            if (possibleCharacters.length > 0) {
-                const index: number = Helpers.random(0, possibleCharacters.length - 1, true);
-                character = possibleCharacters[index];
-            }
-
-            this.flakes.push(new Flake(
-                Helpers.random(0, this.canvas.width, true), 
-                0,
-                character
-            ));
+    private load(): void 
+    {
+        for (let i = 0; i < this.configuration.flakeCount; i++) {
+            this.flakes.push(new Flake(random(0, this.canvas.width, true), 0));   
         }
     }
 
@@ -81,16 +68,13 @@ export default class Blizzard {
             const flake: Flake = this.flakes[i];
             flake.update();
 
-            const y: number = flake.y;
-            const x: number = flake.x;
-
             if (!this.configuration.avoidMouse) {
                 this.wind.updateFlake(flake);
             }
 
-            this.drawCharacterFlake(x, y, flake.character);
+            this.drawCharacterFlake(flake);
 
-            if (y >= this.canvas.height) {
+            if (flake.y >= this.canvas.height) {
                 flake.resetFlakeToTop();
             }
         }
@@ -101,16 +85,17 @@ export default class Blizzard {
     }
 
     /**
-     * Draw a character
-     * @param {number} x 
-     * @param {number} y
-     * @param {string} character
+     * Draw a character flake
      * @returns {void}
      */
-    private drawCharacterFlake(x: number, y: number, character: string): void
+    private drawCharacterFlake(flake: Flake): void
     {
         this.canvas.context.font = '2em serif';
-        this.canvas.context.fillText(character, x, y);
+        this.canvas.context.beginPath();
+        this.canvas.context.arc(flake.x, flake.y, this.configuration.flakeSize, 0, 2 * Math.PI, false);
+        this.canvas.context.fillStyle = 'rgba(255, 255, 255, 1)';
+        this.canvas.context.fill();
+        
     }
 
     /**
@@ -121,8 +106,7 @@ export default class Blizzard {
     {
         return {
             flakeCount: 100,
-            flakeCharacter: '❄️',
-            flakeCharacters: ['❄️','🍻'],
+            flakeSize: 4,
             windSpeed: 5,
             avoidMouse: false
         };
@@ -136,19 +120,14 @@ export interface BlizzardConfigurationItem {
     flakeCount?: number;
 
     /**
+     * What is the size of the flake?
+    */
+    flakeSize?: number;
+
+    /**
      * What is the virtual wind speed of the application
      */
     windSpeed?: number;
-
-    /**
-     * What character should be shown when displaying the flake
-     */
-    flakeCharacter?: string;
-
-    /**
-     * What characters should be shown at random
-     */
-    flakeCharacters?: Array<string>;
 
     /**
      * Should the snow flakes react to the mouse
