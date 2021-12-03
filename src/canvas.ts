@@ -44,6 +44,7 @@ export class Canvas {
 
     public set height(n: number) {
         this._height = n;
+        this.style();
     }
 
     public get width(): number {
@@ -52,6 +53,7 @@ export class Canvas {
 
     public set width(n: number) {
        this._width = n;
+       this.style();
     }
 
     /**
