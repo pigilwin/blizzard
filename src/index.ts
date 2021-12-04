@@ -64,7 +64,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
             return;
         }
 
-        if (e.code === 'KeyR' && e.shiftKey) {
+        if (e.code === 'KeyR' && e.ctrlKey) {
             config.rgb = !config.rgb;
         }
 
@@ -128,7 +128,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
-        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0));
+        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.rgb));
     }
     return flakes;
 };
@@ -137,6 +137,6 @@ const drawFlake = (context: CanvasRenderingContext2D, configuration: BlizzardCon
     context.font = '2em serif';
     context.beginPath();
     context.arc(flake.x, flake.y, configuration.flakeSize, 0, 2 * Math.PI, false);
-    context.fillStyle = 'rgba(255, 255, 255, 1)';
+    context.fillStyle = 'rgba(' + flake.r + ', ' + flake.g + ', ' + flake.b + ', 1)';
     context.fill();
 };

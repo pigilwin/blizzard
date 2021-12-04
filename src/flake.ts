@@ -9,14 +9,31 @@ export interface Flake {
     y: number;
     wind: number;
     gravity: number;
+    r: number;
+    g: number;
+    b: number;
 }
 
-export const initialiseFlake = (x: number, y: number): Flake => {
+export const initialiseFlake = (x: number, y: number, usingRgb: boolean): Flake => {
+
+    let r = 255;
+    let g = 255;
+    let b = 255;
+
+    if (usingRgb) {
+        r = random(0, 255, true);
+        g = random(0, 255, true);
+        b = random(0, 255, true);
+    }
+
     return {
         x,
         y,
         wind: random(0, Math.PI, false),
-        gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity
+        gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity,
+        r,
+        g,
+        b
     };
 };
 
