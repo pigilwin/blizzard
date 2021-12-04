@@ -1,73 +1,31 @@
-export class Canvas {
+const canvasId = 'blizzard-canvas';
 
-    private readonly canvasId: string = 'blizzard-canvas';
+const getCanvas = (): HTMLCanvasElement => {
+    return document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
+};
 
-    private canvas: HTMLCanvasElement;
-    private _context: CanvasRenderingContext2D;
-    private _width: number;
-    private _height: number;
-    
-    /**
-     * Build a new canvas
-     * @param {number} height 
-     * @param {number} width 
-     */
-    public constructor(height: number, width: number) {
-        this._height = height;
-        this._width = width;
+export const appendCanvasToDocument = (width: number, height: number): void => {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.id = canvasId;
 
-        /**
-         * If the element is already detected then lets fail
-         */
-        if (document.querySelector("#" + this.canvasId) !== null) {
-            throw new Error('A blizzard canvas element has already been found');
-        }
+    canvas.style.margin = '0';
+    canvas.style.padding = '0';
+    canvas.style.position = 'fixed';
+    canvas.style.touchAction = 'none';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.zIndex = '-1';
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.id = this.canvasId;
-        this._context = <CanvasRenderingContext2D> this.canvas.getContext('2d');
-        this.style();
-        document.body.appendChild(this.canvas);
-    }
+    document.body.appendChild(canvas);
+};
 
-    /**
-     * Fetch the context of the canvas
-     * @returns {CanvasRenderingContext2D}
-     */
-    public get context(): CanvasRenderingContext2D {
-        return this._context;
-    }
+export const doesCanvasExistOnDocument = (): boolean => {
+    return document.querySelector(`#${canvasId}`) !== null;
+};
 
-    public get height(): number {
-        return this._height;
-    }
-
-    public set height(n: number) {
-        this._height = n;
-        this.style();
-    }
-
-    public get width(): number {
-        return this._width;
-    }
-
-    public set width(n: number) {
-       this._width = n;
-       this.style();
-    }
-
-    /**
-     * Set the style
-     */
-    private style(): void {
-        this.canvas.height = this._height;
-        this.canvas.width = this._width;
-        this.canvas.style.margin = '0';
-        this.canvas.style.padding = '0';
-        this.canvas.style.position = 'fixed';
-        this.canvas.style.touchAction = 'none';
-        this.canvas.style.top = '0';
-        this.canvas.style.left = '0';
-        this.canvas.style.zIndex = '-1';
-    }
-}
+export const getConext = (): CanvasRenderingContext2D => {
+    const canvas = getCanvas();
+    return <CanvasRenderingContext2D> canvas.getContext('2d');
+};

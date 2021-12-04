@@ -1,49 +1,18 @@
 import {random} from './helpers';
 import {Flake} from './flake';
-import {Canvas} from './canvas';
-
+import {doesCanvasExistOnDocument, getConext, appendCanvasToDocument} from './canvas';
+/**
 export default class Blizzard {
-
-    public readonly canvas: Canvas;
-
-    private configuration: BlizzardConfigurationItem;
-    private flakes: Array<Flake> = [];
-
-    /**
-     * Create a new blizzard
-     * @param {BlizzardConfigurationItem} config 
-     */
-    public constructor(config: BlizzardConfigurationItem = {}) {
-        this.configuration = Object.assign(this.defaultConfiguration(), config);
-        this.canvas = new Canvas(window.innerHeight, window.innerWidth);
-
-        for (let i = 0; i < this.configuration.flakeCount; i++) {
-            this.flakes.push(new Flake(random(0, this.canvas.width, true), 0));   
-        }
-    } 
-
-    /**
-     * Start the canvas
-     * @returns {void}
-     */
+    
     public start(): void {
         this.scaleCanvas();
         this.loop();
     }
 
-    /**
-     * Scale the canvas to the screen
-     * @returns {void}
-     */
     public scaleCanvas(): void {
         this.canvas.height = window.innerHeight;
         this.canvas.width = window.innerWidth;
     }
-
-    /**
-     * Loop each annimation frame
-     * @returns {void}
-     */
     private loop(): void {
 
         let i: number = this.flakes.length;
@@ -66,10 +35,6 @@ export default class Blizzard {
         });
     }
 
-    /**
-     * Draw a character flake
-     * @returns {void}
-     */
     private drawCharacterFlake(flake: Flake): void
     {
         this.canvas.context.font = '2em serif';
@@ -79,21 +44,8 @@ export default class Blizzard {
         this.canvas.context.fill();
         
     }
-
-    /**
-     * Fetch the default blizzard configuration item
-     * @returns {BlizzardConfigurationItem}
-     */
-    private defaultConfiguration(): BlizzardConfigurationItem
-    {
-        return {
-            flakeCount: 100,
-            flakeSize: 4,
-            windSpeed: 1
-        };
-    }
 }
-
+*/
 export interface BlizzardConfigurationItem {
     /**
      * How many flakes should be shown on the page at one time
@@ -110,3 +62,34 @@ export interface BlizzardConfigurationItem {
      */
     windSpeed?: number;
 }
+
+export const defaultConfiguration: BlizzardConfigurationItem = {
+    flakeCount: 100,
+    flakeSize: 4,
+    windSpeed: 1
+};
+
+export const initialiseBlizzard = (userRequestedConfig: BlizzardConfigurationItem = defaultConfiguration): void => {
+    /**
+     * Check if the canvas exists on the document
+     */
+    if (!doesCanvasExistOnDocument()) {
+        /**
+         * If it doesn't, create it
+         */
+        appendCanvasToDocument(window.innerWidth, window.innerHeight);
+    }
+
+    const config: BlizzardConfigurationItem = Object.assign(defaultConfiguration, userRequestedConfig);
+    const flakes: Array<Flake> = createFlakes(config);
+
+    return;
+};
+
+const createFlakes = (config: BlizzardConfigurationItem): Array<Flake> => {
+    const flakes: Array<Flake> = [];
+    for (let i = 0; i < config.flakeCount; i++) {
+        flakes.push(new Flake(random(0, window.innerWidth, true), 0));
+    }
+    return flakes;
+};
