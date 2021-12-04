@@ -24,7 +24,7 @@ export class Canvas {
         }
 
         this.canvas = document.createElement('canvas');
-        this.canvas.id = 'blizzard-canvas';
+        this.canvas.id = this.canvasId;
         this._context = <CanvasRenderingContext2D> this.canvas.getContext('2d');
         this.style();
         document.body.appendChild(this.canvas);
