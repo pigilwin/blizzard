@@ -16,12 +16,18 @@ export interface BlizzardConfiguration {
      * What is the virtual wind speed of the application
      */
     windSpeed?: number;
+
+    /**
+     * Should we randomise the colors
+     */
+    rgb: boolean;
 }
 
 export const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     flakeSize: 4,
-    windSpeed: 1
+    windSpeed: 1,
+    rgb: false
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
@@ -35,6 +41,13 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         appendCanvasToDocument(window.innerWidth, window.innerHeight);
     }
 
+    const config: BlizzardConfiguration = Object.assign(defaultConfiguration, userRequestedConfig);
+
+    /**
+     * Create a list of flakes
+     */
+    let flakes: Array<Flake> = createFlakes(config);
+
     /**
      * If the window size changes then resize the canvas
      */
@@ -42,13 +55,23 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         setCanvasSize(window.innerWidth, window.innerHeight);
     });
 
-    const config: BlizzardConfiguration = Object.assign(defaultConfiguration, userRequestedConfig);
-    const context = getContext();
-    
     /**
-     * Create a list of flakes
+     * Enable RGB on keyboard change
      */
-    const flakes: Array<Flake> = createFlakes(config);
+    window.addEventListener('keydown', (e) => {
+
+        if (e.code !== 'KeyR') {
+            return;
+        }
+
+        if (e.code === 'KeyR' && e.shiftKey) {
+            config.rgb = !config.rgb;
+        }
+
+        flakes = createFlakes(config);
+    });
+
+    const context = getContext();
 
     const loop = () => {
 
