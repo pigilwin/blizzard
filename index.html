@@ -17,7 +17,9 @@
       import { initialiseBlizzard } from './dist/index.es.js';
 
       document.addEventListener('DOMContentLoaded', () => {
-        initialiseBlizzard();
+        initialiseBlizzard({
+          flakeCount: 300,
+        });
       });
     </script>
   </body>
