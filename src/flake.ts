@@ -23,8 +23,8 @@ export class Flake {
         this.gravity = (random(1, this.maxWeight, false) / this.maxWeight) * this.maxGravity;
     }
 
-    public update(): void {
-        this._x += Math.cos(this.wind) + Math.sin(this.wind);//Calculate the next random position
+    public update(windSpeed: number): void {
+        this._x += (Math.cos(this.wind) + Math.sin(this.wind)) * windSpeed;//Calculate the next random position
         this.wind += this.step;
         this._y += this.gravity;
     }

@@ -1,12 +1,10 @@
 import {random} from './helpers';
 import {Flake} from './flake';
 import {Canvas} from './canvas';
-import { Wind } from './wind';
 
 export default class Blizzard {
 
     public readonly canvas: Canvas;
-    public readonly wind: Wind;
 
     private configuration: BlizzardConfigurationItem;
     private flakes: Array<Flake> = [];
@@ -18,8 +16,10 @@ export default class Blizzard {
     public constructor(config: BlizzardConfigurationItem = {}) {
         this.configuration = Object.assign(this.defaultConfiguration(), config);
         this.canvas = new Canvas(window.innerHeight, window.innerWidth);
-        this.wind = new Wind();
-        this.load();
+
+        for (let i = 0; i < this.configuration.flakeCount; i++) {
+            this.flakes.push(new Flake(random(0, this.canvas.width, true), 0));   
+        }
     } 
 
     /**
@@ -29,17 +29,6 @@ export default class Blizzard {
     public start(): void {
         this.scaleCanvas();
         this.loop();
-    }
-
-    /**
-     * Load the flakes into the instance
-     * @returns {void}
-     */
-    private load(): void 
-    {
-        for (let i = 0; i < this.configuration.flakeCount; i++) {
-            this.flakes.push(new Flake(random(0, this.canvas.width, true), 0));   
-        }
     }
 
     /**
@@ -59,18 +48,11 @@ export default class Blizzard {
 
         let i: number = this.flakes.length;
 
-        this.canvas.context.save();
-        this.canvas.context.setTransform(1, 0, 0, 1, 0, 0);
         this.canvas.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.canvas.context.restore();
 
         while(i--) {
             const flake: Flake = this.flakes[i];
-            flake.update();
-
-            if (!this.configuration.avoidMouse) {
-                this.wind.updateFlake(flake);
-            }
+            flake.update(this.configuration.windSpeed);
 
             this.drawCharacterFlake(flake);
 
@@ -107,8 +89,7 @@ export default class Blizzard {
         return {
             flakeCount: 100,
             flakeSize: 4,
-            windSpeed: 5,
-            avoidMouse: false
+            windSpeed: 1
         };
     }
 }
@@ -128,9 +109,4 @@ export interface BlizzardConfigurationItem {
      * What is the virtual wind speed of the application
      */
     windSpeed?: number;
-
-    /**
-     * Should the snow flakes react to the mouse
-     */
-    avoidMouse?: boolean;
 }
