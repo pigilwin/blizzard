@@ -1,52 +1,7 @@
 import {random} from './helpers';
 import {Flake} from './flake';
-import {doesCanvasExistOnDocument, getConext, appendCanvasToDocument} from './canvas';
-/**
-export default class Blizzard {
-    
-    public start(): void {
-        this.scaleCanvas();
-        this.loop();
-    }
-
-    public scaleCanvas(): void {
-        this.canvas.height = window.innerHeight;
-        this.canvas.width = window.innerWidth;
-    }
-    private loop(): void {
-
-        let i: number = this.flakes.length;
-
-        this.canvas.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        while(i--) {
-            const flake: Flake = this.flakes[i];
-            flake.update(this.configuration.windSpeed);
-
-            this.drawCharacterFlake(flake);
-
-            if (flake.y >= this.canvas.height) {
-                flake.resetFlakeToTop();
-            }
-        }
-
-        requestAnimationFrame(() => {
-            this.loop();
-        });
-    }
-
-    private drawCharacterFlake(flake: Flake): void
-    {
-        this.canvas.context.font = '2em serif';
-        this.canvas.context.beginPath();
-        this.canvas.context.arc(flake.x, flake.y, this.configuration.flakeSize, 0, 2 * Math.PI, false);
-        this.canvas.context.fillStyle = 'rgba(255, 255, 255, 1)';
-        this.canvas.context.fill();
-        
-    }
-}
-*/
-export interface BlizzardConfigurationItem {
+import {doesCanvasExistOnDocument, getContext, appendCanvasToDocument, setCanvasSize} from './canvas';
+export interface BlizzardConfiguration {
     /**
      * How many flakes should be shown on the page at one time
      */
@@ -63,13 +18,13 @@ export interface BlizzardConfigurationItem {
     windSpeed?: number;
 }
 
-export const defaultConfiguration: BlizzardConfigurationItem = {
+export const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     flakeSize: 4,
     windSpeed: 1
 };
 
-export const initialiseBlizzard = (userRequestedConfig: BlizzardConfigurationItem = defaultConfiguration): void => {
+export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
     /**
      * Check if the canvas exists on the document
      */
@@ -80,16 +35,73 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfigurationIte
         appendCanvasToDocument(window.innerWidth, window.innerHeight);
     }
 
-    const config: BlizzardConfigurationItem = Object.assign(defaultConfiguration, userRequestedConfig);
+    /**
+     * If the window size changes then resize the canvas
+     */
+    window.addEventListener('resize', () => {
+        setCanvasSize(window.innerWidth, window.innerHeight);
+    });
+
+    const config: BlizzardConfiguration = Object.assign(defaultConfiguration, userRequestedConfig);
+    const context = getContext();
+    
+    /**
+     * Create a list of flakes
+     */
     const flakes: Array<Flake> = createFlakes(config);
+
+    const loop = () => {
+
+        let i: number = flakes.length;
+
+        /**
+         * Clear the canvas
+         */
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+        while(i--) {
+            const flake: Flake = flakes[i];
+            flake.update(config.windSpeed);
+
+            /**
+             * Draw the flake on the canvas
+             */
+            drawFlake(context, config, flake);
+
+            /**
+             * If the flake y position is greater than the height of the canvas then
+             * reset the flake to the top of the canvas
+             */
+            if (flake.y >= context.canvas.height) {
+                flake.resetFlakeToTop();
+            }
+        }
+
+        /**
+         * Register the next frame
+         */
+        requestAnimationFrame(() => {
+            loop();
+        });
+    };
+
+    loop();
 
     return;
 };
 
-const createFlakes = (config: BlizzardConfigurationItem): Array<Flake> => {
+const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
         flakes.push(new Flake(random(0, window.innerWidth, true), 0));
     }
     return flakes;
+};
+
+const drawFlake = (context: CanvasRenderingContext2D, configuration: BlizzardConfiguration, flake: Flake) => {
+    context.font = '2em serif';
+    context.beginPath();
+    context.arc(flake.x, flake.y, configuration.flakeSize, 0, 2 * Math.PI, false);
+    context.fillStyle = 'rgba(255, 255, 255, 1)';
+    context.fill();
 };

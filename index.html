@@ -13,15 +13,11 @@
     </style>
   </head>
   <body>
-    <script src="dist/index.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const blizzardInstance = new Blizzard();
-        blizzardInstance.start();
+    <script type="module">
+      import { initialiseBlizzard } from './dist/index.es.js';
 
-        window.addEventListener('resize', () => {
-            blizzardInstance.scaleCanvas();
-        });
+      document.addEventListener('DOMContentLoaded', () => {
+        initialiseBlizzard();
       });
     </script>
   </body>

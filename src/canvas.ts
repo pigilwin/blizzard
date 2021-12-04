@@ -25,7 +25,13 @@ export const doesCanvasExistOnDocument = (): boolean => {
     return document.querySelector(`#${canvasId}`) !== null;
 };
 
-export const getConext = (): CanvasRenderingContext2D => {
+export const getContext = (): CanvasRenderingContext2D => {
     const canvas = getCanvas();
     return <CanvasRenderingContext2D> canvas.getContext('2d');
+};
+
+export const setCanvasSize = (width: number, height: number): void => {
+    const canvas = getCanvas();
+    canvas.width = width;
+    canvas.height = height;
 };
