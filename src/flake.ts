@@ -1,48 +1,46 @@
 import {random} from './helpers';
 
-export class Flake {
-    
-    private readonly maxWeight: number = 5;
-    private readonly maxGravity: number = 3;
-    private readonly step: number = 0.01;
+const maxWeight = 5;
+const maxGravity = 3;
+const step = 0.01;
 
-    private _x: number;
-    private _y: number;
-    private wind: number;
-    private gravity: number;
+export interface Flake {
+    x: number;
+    y: number;
+    wind: number;
+    gravity: number;
+}
+
+export const initialiseFlake = (x: number, y: number): Flake => {
+    return {
+        x,
+        y,
+        wind: random(0, Math.PI, false),
+        gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity
+    };
+};
+
+export const updateFlakePostition = (flake: Flake, windSpeed: number): void => {
+    /**
+     * Calculate the next random position of the X value;
+     */
+    flake.x += (Math.cos(flake.wind) + Math.sin(flake.wind)) * windSpeed;
 
     /**
-     * Create a new flake
-     * @param x
-     * @param y 
+     * Calculate the next random position of the Y value;
      */
-    public constructor(x: number, y: number){
-        this._x = x;
-        this._y = y;
-        this.wind = random(0, Math.PI, false);
-        this.gravity = (random(1, this.maxWeight, false) / this.maxWeight) * this.maxGravity;
-    }
+    flake.y += flake.gravity;
 
-    public update(windSpeed: number): void {
-        this._x += (Math.cos(this.wind) + Math.sin(this.wind)) * windSpeed;//Calculate the next random position
-        this.wind += this.step;
-        this._y += this.gravity;
-    }
-    
-    public resetFlakeToTop(): void {
-        this._y = 0;
-    }
+    /**
+     * Update the wind value;
+     */
+    flake.wind += step;
+};
 
-    public get x(): number {
-        return this._x;
-    }
+export const resetFlakeXPosition = (flake: Flake, x: number): void => {
+    flake.x = x;
+};
 
-    public set x(x: number)
-    {
-        this._x = x;
-    }
-
-    public get y(): number {
-        return this._y;
-    }
-}
+export const resetFlakeYPosition = (flake: Flake): void => {
+    flake.y = 0;
+};

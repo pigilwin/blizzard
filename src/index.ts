@@ -1,5 +1,5 @@
 import {random} from './helpers';
-import {Flake} from './flake';
+import {Flake, initialiseFlake, resetFlakeXPosition, resetFlakeYPosition, updateFlakePostition} from './flake';
 import {doesCanvasExistOnDocument, getContext, appendCanvasToDocument, setCanvasSize} from './canvas';
 export interface BlizzardConfiguration {
     /**
@@ -61,7 +61,11 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 
         while(i--) {
             const flake: Flake = flakes[i];
-            flake.update(config.windSpeed);
+
+            /**
+             * Update the current flake position in the interation
+             */
+            updateFlakePostition(flake, config.windSpeed);
 
             /**
              * Draw the flake on the canvas
@@ -73,7 +77,15 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
              * reset the flake to the top of the canvas
              */
             if (flake.y >= context.canvas.height) {
-                flake.resetFlakeToTop();
+                resetFlakeYPosition(flake);
+            }
+
+            /**
+             * If the flake x position is less than 0 or the flake x position is greater 
+             * than the width of the canvas then randomise the position
+             */
+            if (flake.x >= context.canvas.width || flake.x <= 0) {
+                resetFlakeXPosition(flake, random(0, window.innerWidth, true));
             }
         }
 
@@ -93,7 +105,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
-        flakes.push(new Flake(random(0, window.innerWidth, true), 0));
+        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0));
     }
     return flakes;
 };
