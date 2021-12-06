@@ -10,7 +10,7 @@ export interface BlizzardConfiguration {
     /**
      * What is the size of the flake?
     */
-    flakeSize?: number;
+    maxFlakeSize?: number;
 
     /**
      * What is the virtual wind speed of the application
@@ -25,7 +25,7 @@ export interface BlizzardConfiguration {
 
 export const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
-    flakeSize: 4,
+    maxFlakeSize: 5,
     windSpeed: 1,
     rgb: false
 };
@@ -93,7 +93,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
             /**
              * Draw the flake on the canvas
              */
-            drawFlake(context, config, flake);
+            drawFlake(context, flake);
 
             /**
              * If the flake y position is greater than the height of the canvas then
@@ -128,15 +128,15 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
-        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.rgb));
+        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.maxFlakeSize, config.rgb));
     }
     return flakes;
 };
 
-const drawFlake = (context: CanvasRenderingContext2D, configuration: BlizzardConfiguration, flake: Flake) => {
+const drawFlake = (context: CanvasRenderingContext2D, flake: Flake) => {
     context.font = '2em serif';
     context.beginPath();
-    context.arc(flake.x, flake.y, configuration.flakeSize, 0, 2 * Math.PI, false);
+    context.arc(flake.x, flake.y, flake.size, 0, 2 * Math.PI, false);
     context.fillStyle = 'rgba(' + flake.r + ', ' + flake.g + ', ' + flake.b + ', 1)';
     context.fill();
 };
