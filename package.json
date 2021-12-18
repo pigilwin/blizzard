@@ -6,8 +6,8 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -cw",
+    "build": "rollup --config rollup.config.production.js",
+    "watch": "rollup --config rollup.config.development.js --watch",
     "clean": "rm -rf dist && rm -rf .cache",
     "lint": "eslint src/ --ext .ts"
   },
