@@ -64,7 +64,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
             return;
         }
 
-        if (e.code === 'KeyR' && e.ctrlKey) {
+        if (e.code === 'KeyR' && e.altKey) {
             config.rgb = !config.rgb;
         }
 
