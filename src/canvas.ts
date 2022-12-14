@@ -1,10 +1,6 @@
-const canvasId = 'blizzard-canvas';
+export const canvasId = 'blizzard-canvas';
 
-const getCanvas = (): HTMLCanvasElement => {
-    return document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
-};
-
-export const appendCanvasToDocument = (width: number, height: number): void => {
+export const createCanvasElement = (width: number, height: number): HTMLCanvasElement => {
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
@@ -18,20 +14,5 @@ export const appendCanvasToDocument = (width: number, height: number): void => {
     canvas.style.left = '0';
     canvas.style.zIndex = '-1';
 
-    document.body.appendChild(canvas);
-};
-
-export const doesCanvasExistOnDocument = (): boolean => {
-    return document.querySelector(`#${canvasId}`) !== null;
-};
-
-export const getContext = (): CanvasRenderingContext2D => {
-    const canvas = getCanvas();
-    return <CanvasRenderingContext2D> canvas.getContext('2d');
-};
-
-export const setCanvasSize = (width: number, height: number): void => {
-    const canvas = getCanvas();
-    canvas.width = width;
-    canvas.height = height;
+    return canvas;
 };

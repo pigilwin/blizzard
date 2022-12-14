@@ -1,6 +1,6 @@
 import {random} from './helpers';
 import {initialiseFlake, resetFlakeXPosition, resetFlakeYPosition, updateFlakePostition} from './flake';
-import {doesCanvasExistOnDocument, getContext, appendCanvasToDocument, setCanvasSize} from './canvas';
+import {canvasId, createCanvasElement} from './canvas';
 import { BlizzardConfiguration, Flake } from './types';
 
 const defaultConfiguration: BlizzardConfiguration = {
@@ -10,14 +10,18 @@ const defaultConfiguration: BlizzardConfiguration = {
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
+    let canvas = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
     /**
-     * Check if the canvas exists on the document
+     * Check if the canvas does not exist on the document,
+     * if it does not create a new element and append
+     * it to the document and assign it
      */
-    if (!doesCanvasExistOnDocument()) {
-        /**
-         * If it doesn't, create it
-         */
-        appendCanvasToDocument(window.innerWidth, window.innerHeight);
+    if (canvas === null) {
+        canvas = createCanvasElement(
+            window.innerWidth, 
+            window.innerHeight
+        );
+        document.body.appendChild(canvas);
     }
 
     const config: BlizzardConfiguration = Object.assign(defaultConfiguration, userRequestedConfig);
@@ -31,10 +35,11 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
      * If the window size changes then resize the canvas
      */
     window.addEventListener('resize', () => {
-        setCanvasSize(window.innerWidth, window.innerHeight);
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
     });
 
-    const context = getContext();
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     const loop = () => {
 
@@ -83,9 +88,10 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         });
     };
 
+    /**
+     * Initialise the main loop
+     */
     loop();
-
-    return;
 };
 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
