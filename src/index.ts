@@ -1,33 +1,12 @@
 import {random} from './helpers';
-import {Flake, initialiseFlake, resetFlakeXPosition, resetFlakeYPosition, updateFlakePostition} from './flake';
+import {initialiseFlake, resetFlakeXPosition, resetFlakeYPosition, updateFlakePostition} from './flake';
 import {doesCanvasExistOnDocument, getContext, appendCanvasToDocument, setCanvasSize} from './canvas';
-export interface BlizzardConfiguration {
-    /**
-     * How many flakes should be shown on the page at one time
-     */
-    flakeCount?: number;
+import { BlizzardConfiguration, Flake } from './types';
 
-    /**
-     * What is the size of the flake?
-    */
-    maxFlakeSize?: number;
-
-    /**
-     * What is the virtual wind speed of the application
-     */
-    windSpeed?: number;
-
-    /**
-     * Should we randomise the colors
-     */
-    rgb: boolean;
-}
-
-export const defaultConfiguration: BlizzardConfiguration = {
+const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     maxFlakeSize: 5,
-    windSpeed: 1,
-    rgb: false
+    windSpeed: 1
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
@@ -53,22 +32,6 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
      */
     window.addEventListener('resize', () => {
         setCanvasSize(window.innerWidth, window.innerHeight);
-    });
-
-    /**
-     * Enable RGB on keyboard change
-     */
-    window.addEventListener('keydown', (e) => {
-
-        if (e.code !== 'KeyR') {
-            return;
-        }
-
-        if (e.code === 'KeyR' && e.altKey) {
-            config.rgb = !config.rgb;
-        }
-
-        flakes = createFlakes(config);
     });
 
     const context = getContext();
@@ -128,7 +91,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
-        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.maxFlakeSize, config.rgb));
+        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.maxFlakeSize));
     }
     return flakes;
 };
@@ -137,6 +100,6 @@ const drawFlake = (context: CanvasRenderingContext2D, flake: Flake) => {
     context.font = '2em serif';
     context.beginPath();
     context.arc(flake.x, flake.y, flake.size, 0, 2 * Math.PI, false);
-    context.fillStyle = 'rgba(' + flake.r + ', ' + flake.g + ', ' + flake.b + ', 1)';
+    context.fillStyle = 'rgba(255, 255, 255)';
     context.fill();
 };

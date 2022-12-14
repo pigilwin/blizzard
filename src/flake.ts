@@ -1,41 +1,17 @@
 import {random} from './helpers';
+import { Flake } from './types';
 
 const maxWeight = 5;
 const maxGravity = 3;
 const step = 0.01;
 
-export interface Flake {
-    x: number;
-    y: number;
-    wind: number;
-    gravity: number;
-    size: number;
-    r: number;
-    g: number;
-    b: number;
-}
-
-export const initialiseFlake = (x: number, y: number, maxFlakeSize: number, usingRgb: boolean): Flake => {
-
-    let r = 255;
-    let g = 255;
-    let b = 255;
-
-    if (usingRgb) {
-        r = random(0, 255, true);
-        g = random(0, 255, true);
-        b = random(0, 255, true);
-    }
-
+export const initialiseFlake = (x: number, y: number, maxFlakeSize: number): Flake => {
     return {
         x,
         y,
         wind: random(0, Math.PI, false),
         gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity,
-        size: random(1, maxFlakeSize, false),
-        r,
-        g,
-        b
+        size: random(1, maxFlakeSize, false)
     };
 };
 
