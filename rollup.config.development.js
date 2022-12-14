@@ -1,5 +1,5 @@
 import typescriptPlugin from 'rollup-plugin-typescript2';
-import pkg from './package.json';
+import pkg from './package.json' assert {type: 'json'};
 import typescript from 'typescript';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
@@ -20,7 +20,7 @@ export default {
     ],
     plugins: [
         typescriptPlugin({
-          typescript: typescript,
+            typescript: typescript,
         }),
         livereload({
             watch: 'dist',

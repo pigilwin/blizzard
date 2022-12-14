@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "rollup --config rollup.config.production.js",
     "watch": "rollup --config rollup.config.development.js --watch",
@@ -26,15 +27,13 @@
   },
   "homepage": "https://gitlab.com/pigilwin/blizzard#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "5.5.0",
-    "eslint": "8.4.0",
-    "rollup": "^2.60.2",
-    "rollup-plugin-typescript2": "^0.31.1",
-    "typescript": "^4.5.2"
-  },
-  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "5.46.1",
+    "eslint": "8.19.0",
+    "rollup": "3.7.4",
+    "rollup-plugin-typescript2": "^0.34.1",
     "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-serve": "^1.1.0"
+    "rollup-plugin-serve": "^2.0.2",
+    "typescript": "^4.9.4"
   }
 }

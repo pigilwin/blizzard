@@ -1,5 +1,5 @@
 import typescriptPlugin from 'rollup-plugin-typescript2';
-import pkg from './package.json';
+import pkg from './package.json' assert {type: 'json'};
 import typescript from 'typescript';
 
 export default {
@@ -18,7 +18,7 @@ export default {
     ],
     plugins: [
         typescriptPlugin({
-          typescript: typescript,
+            typescript: typescript,
         })
     ]
 };
