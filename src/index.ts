@@ -1,7 +1,7 @@
 import {random} from './helpers';
-import {initialiseFlake, resetFlakeXPosition, resetFlakeYPosition, updateFlakePostition} from './flake';
+import {initialiseFlake, resetFlakeYPosition, updateFlakePostition} from './flake';
 import {canvasId, createCanvasElement} from './canvas';
-import { BlizzardConfiguration, Flake } from './types';
+import { BlizzardConfiguration, BlizzardState, Flake } from './types';
 
 const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
@@ -25,58 +25,81 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
     }
 
     const config: BlizzardConfiguration = Object.assign(defaultConfiguration, userRequestedConfig);
-
-    /**
-     * Create a list of flakes
-     */
-    let flakes: Array<Flake> = createFlakes(config);
+    const state: BlizzardState = {
+        context: canvas.getContext('2d'),
+        height: canvas.height,
+        width: canvas.width,
+        flakes: createFlakes(config),
+        tenPercentOfWidth: canvas.width / 10
+    };
 
     /**
      * If the window size changes then resize the canvas
      */
     window.addEventListener('resize', () => {
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
+        state.width = window.innerWidth;
+        state.height = window.innerHeight;
+
+        canvas.height = state.height;
+        canvas.width = state.width;
     });
 
-    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-
     const loop = () => {
-
-        let i: number = flakes.length;
-
         /**
          * Clear the canvas
          */
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        state.context.clearRect(
+            0,
+            0,
+            state.width,
+            state.height
+        );
 
-        while(i--) {
-            const flake: Flake = flakes[i];
-
+        for (const flake of state.flakes){
             /**
-             * Update the current flake position in the interation
+             * Update the current flake position in the iteration
              */
-            updateFlakePostition(flake, config.windSpeed);
+            updateFlakePostition(
+                flake,
+                config.windSpeed
+            );
 
             /**
              * Draw the flake on the canvas
              */
-            drawFlake(context, flake);
+            drawFlake(state.context, flake);
 
             /**
              * If the flake y position is greater than the height of the canvas then
              * reset the flake to the top of the canvas
              */
-            if (flake.y >= context.canvas.height) {
+            if (flake.y >= state.height) {
                 resetFlakeYPosition(flake);
             }
 
             /**
-             * If the flake x position is less than 0 or the flake x position is greater 
-             * than the width of the canvas then randomise the position
+             * If the flake goes off the screen to the right then begin shifting
+             * the flake back between the length of the screen and 10 below the
+             * length of the screen.
              */
-            if (flake.x >= context.canvas.width || flake.x <= 0) {
-                resetFlakeXPosition(flake, random(0, window.innerWidth, true));
+            if (flake.x >= state.width) {
+                flake.x = random(
+                    state.width - state.tenPercentOfWidth,
+                    state.width,
+                    true
+                );
+            }
+
+            /**
+             * If the flake goes off the screen to the left then reset the
+             * position to the x between 0 and 10 pixels
+             */
+            if (flake.x <= 0) {
+                flake.x += random(
+                    0,
+                    state.tenPercentOfWidth,
+                    true
+                );
             }
         }
 
@@ -97,7 +120,17 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
 const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
-        flakes.push(initialiseFlake(random(0, window.innerWidth, true), 0, config.maxFlakeSize));
+        flakes.push(
+            initialiseFlake(
+                random(
+                    0,
+                    window.innerWidth,
+                    true
+                ),
+                0,
+                config.maxFlakeSize
+            )
+        );
     }
     return flakes;
 };
@@ -105,7 +138,14 @@ const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
 const drawFlake = (context: CanvasRenderingContext2D, flake: Flake) => {
     context.font = '2em serif';
     context.beginPath();
-    context.arc(flake.x, flake.y, flake.size, 0, 2 * Math.PI, false);
+    context.arc(
+        flake.x,
+        flake.y,
+        flake.size,
+        0,
+        2 * Math.PI,
+        false
+    );
     context.fillStyle = 'rgba(255, 255, 255)';
     context.fill();
 };
