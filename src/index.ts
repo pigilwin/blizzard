@@ -1,12 +1,12 @@
 import {random} from './helpers';
-import {initialiseFlake, resetFlakeYPosition, updateFlakePostition} from './flake';
+import {initialiseFlake, updateFlakePosition} from './flake';
 import {canvasId, createCanvasElement} from './canvas';
 import { BlizzardConfiguration, BlizzardState, Flake } from './types';
 
 const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     maxFlakeSize: 5,
-    windSpeed: 1
+    windSpeed: 5
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
@@ -29,9 +29,11 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         context: canvas.getContext('2d'),
         height: canvas.height,
         width: canvas.width,
-        flakes: createFlakes(config),
-        tenPercentOfWidth: canvas.width / 10
+        flakes: [],
+        tenPercentOfWidth: canvas.width / 10,
+        windSpeed: random(0.2, config.windSpeed, false),
     };
+    state.flakes = createFlakes(config, state);
 
     /**
      * If the window size changes then resize the canvas
@@ -59,48 +61,14 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
             /**
              * Update the current flake position in the iteration
              */
-            updateFlakePostition(
+            updateFlakePosition(
                 flake,
-                config.windSpeed
+                state
             );
-
             /**
              * Draw the flake on the canvas
              */
             drawFlake(state.context, flake);
-
-            /**
-             * If the flake y position is greater than the height of the canvas then
-             * reset the flake to the top of the canvas
-             */
-            if (flake.y >= state.height) {
-                resetFlakeYPosition(flake);
-            }
-
-            /**
-             * If the flake goes off the screen to the right then begin shifting
-             * the flake back between the length of the screen and 10 below the
-             * length of the screen.
-             */
-            if (flake.x >= state.width) {
-                flake.x = random(
-                    state.width - state.tenPercentOfWidth,
-                    state.width,
-                    true
-                );
-            }
-
-            /**
-             * If the flake goes off the screen to the left then reset the
-             * position to the x between 0 and 10 pixels
-             */
-            if (flake.x <= 0) {
-                flake.x += random(
-                    0,
-                    state.tenPercentOfWidth,
-                    true
-                );
-            }
         }
 
         /**
@@ -117,18 +85,14 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
     loop();
 };
 
-const createFlakes = (config: BlizzardConfiguration): Array<Flake> => {
+const createFlakes = (config: BlizzardConfiguration, state: BlizzardState): Array<Flake> => {
     const flakes: Array<Flake> = [];
     for (let i = 0; i < config.flakeCount; i++) {
         flakes.push(
             initialiseFlake(
-                random(
-                    0,
-                    window.innerWidth,
-                    true
-                ),
-                0,
-                config.maxFlakeSize
+                state.width,
+                config.maxFlakeSize,
+                state.windSpeed
             )
         );
     }

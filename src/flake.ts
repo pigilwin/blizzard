@@ -1,41 +1,103 @@
 import {random} from './helpers';
-import { Flake } from './types';
+import {BlizzardState, Flake, WindDirection} from './types';
 
 const maxWeight = 5;
 const maxGravity = 3;
-const step = 0.01;
 
-export const initialiseFlake = (x: number, y: number, maxFlakeSize: number): Flake => {
+export const initialiseFlake = (
+    width: number,
+    maxFlakeSize: number,
+    windSpeed: number
+): Flake => {
+    const halfOfWidth = width / 2;
+    const startingPosition = random(0, width, true);
+
     return {
-        x,
-        y,
-        wind: random(0, Math.PI, false),
+        x: startingPosition,
+        y: 0,
+        wind: windSpeed,
         gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity,
-        size: random(1, maxFlakeSize, false)
+        size: random(1, maxFlakeSize, false),
+        direction: WindDirection.neutral,
+        startedHalfwayAcross: startingPosition >= halfOfWidth,
     };
 };
 
-export const updateFlakePostition = (flake: Flake, windSpeed: number): void => {
-    /**
-     * Calculate the next random position of the X value;
-     */
-    flake.x += (Math.cos(flake.wind) + Math.sin(flake.wind)) * windSpeed;
+export const updateFlakePosition = (flake: Flake, state: BlizzardState): void => {
 
     /**
-     * Calculate the next random position of the Y value;
+     * If the flake y position is greater than the height of the canvas then
+     * reset the flake to the top of the canvas
      */
-    flake.y += flake.gravity;
+    if (flake.y >= state.height) {
+        flake.y = 0;
+    }
 
     /**
-     * Update the wind value;
+     * Default the wind direction to be neutral
      */
-    flake.wind += step;
+    flake.direction = WindDirection.neutral;
+
+    /**
+     * If the flake goes off the screen to the right then
+     * instruct the wind to force the flake back to the left
+     */
+    if (flake.x >= state.width) {
+        flake.direction = WindDirection.left;
+    }
+
+    /**
+     * If the flake goes off the screen to the left then
+     * instruct the wind to force the flake back to the right
+     */
+    if (flake.x <= 0) {
+        flake.direction = WindDirection.right;
+    }
+
+    const newPositionBasedOnWind = calculateWind(flake);
+
+    /**
+     * Depending on how the wind is the x value can be configured
+     */
+    switch (flake.direction) {
+        case WindDirection.left:
+            flake.x -= newPositionBasedOnWind * 10;
+            break;
+        case WindDirection.right:
+            flake.x += newPositionBasedOnWind * 10;
+            break;
+        case WindDirection.neutral:
+            if (flake.startedHalfwayAcross) {
+                flake.x -= newPositionBasedOnWind;
+            } else {
+                flake.x += newPositionBasedOnWind;
+            }
+            break;
+    }
+
+    /**
+     * Update the y position based on the gravity speed of the flake
+     */
+    flake.y += flake.gravity * flake.wind;
 };
 
-export const resetFlakeXPosition = (flake: Flake, x: number): void => {
-    flake.x = x;
-};
+const calculateWind = (flake: Flake): number => {
+    /**
+     * Build a random list of possible mathematical function calls
+     */
+    const mathematicalParts = [
+        Math.cos(flake.wind),
+        Math.sin(flake.wind),
+        Math.tan(flake.wind),
+        Math.pow(flake.gravity, 2)
+    ];
 
-export const resetFlakeYPosition = (flake: Flake): void => {
-    flake.y = 0;
+    /**
+     * Sort the above list
+     */
+    mathematicalParts.sort(() => {
+        return Math.random();
+    });
+
+    return mathematicalParts.reduce((a, b) => a + b, 0);
 };

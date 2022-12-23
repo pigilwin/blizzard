@@ -16,6 +16,12 @@ export interface BlizzardConfiguration {
     windSpeed?: number;
 }
 
+export enum WindDirection {
+    right,
+    left,
+    neutral
+}
+
 /**
  * What the context of the current blizzard state looks like
  */
@@ -40,6 +46,11 @@ export interface BlizzardState {
      * What is 10 percent of the current width
      */
     tenPercentOfWidth: number;
+
+    /**
+     * How fast should the wind be based on the configuration the user has passed in and the default
+     */
+    windSpeed: number;
 }
 
 /**
@@ -66,4 +77,14 @@ export interface Flake {
      * How big is the flake on the canvas
      */
     size: number;
+
+    /**
+     * What direction should the wind move
+     */
+    direction: WindDirection;
+
+    /**
+     * Did the flake start halfway across the screen
+     */
+    startedHalfwayAcross: boolean;
 }
