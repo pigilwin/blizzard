@@ -1,3 +1,6 @@
+/**
+ * How to configure the blizzard render
+ */
 export interface BlizzardConfiguration {
     /**
      * How many flakes should be shown on the page at one time
@@ -13,6 +16,9 @@ export interface BlizzardConfiguration {
     windSpeed?: number;
 }
 
+/**
+ * What the context of the current blizzard state looks like
+ */
 export interface BlizzardState {
     /**
      * The context of the canvas being used to render the blizzard
@@ -36,7 +42,9 @@ export interface BlizzardState {
     tenPercentOfWidth: number;
 }
 
-
+/**
+ * How a flake is defined
+ */
 export interface Flake {
     /**
      * The location within the canvas on the horizontal plane
