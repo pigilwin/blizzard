@@ -6,7 +6,7 @@ import { BlizzardConfiguration, BlizzardState, Flake } from './types';
 const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     maxFlakeSize: 5,
-    windSpeed: 5
+    windSpeed: 3
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
@@ -31,7 +31,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         width: canvas.width,
         flakes: [],
         tenPercentOfWidth: canvas.width / 10,
-        windSpeed: random(0.2, config.windSpeed, false),
+        windSpeed: config.windSpeed
     };
     state.flakes = createFlakes(config, state);
 

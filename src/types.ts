@@ -17,9 +17,8 @@ export interface BlizzardConfiguration {
 }
 
 export enum WindDirection {
-    right,
-    left,
-    neutral
+    blowLeft,
+    blowRight
 }
 
 /**
@@ -72,7 +71,7 @@ export interface Flake {
     /**
      * How fast should the flake fall relevant to the wind
      */
-    gravity: number;
+    weight: number;
     /**
      * How big is the flake on the canvas
      */
@@ -82,9 +81,4 @@ export interface Flake {
      * What direction should the wind move
      */
     direction: WindDirection;
-
-    /**
-     * Did the flake start halfway across the screen
-     */
-    startedHalfwayAcross: boolean;
 }

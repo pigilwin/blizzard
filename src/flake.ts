@@ -2,48 +2,40 @@ import {random} from './helpers';
 import {BlizzardState, Flake, WindDirection} from './types';
 
 const maxWeight = 5;
-const maxGravity = 3;
 
 export const initialiseFlake = (
     width: number,
     maxFlakeSize: number,
     windSpeed: number
 ): Flake => {
-    const halfOfWidth = width / 2;
-    const startingPosition = random(0, width, true);
-
+    const half = width / 2;
+    const startPosition = random(0, width, true);
     return {
-        x: startingPosition,
+        x: startPosition,
         y: 0,
         wind: windSpeed,
-        gravity: (random(1, maxWeight, false) / maxWeight) * maxGravity,
+        weight: random(3, maxWeight, false) / maxWeight,
         size: random(1, maxFlakeSize, false),
-        direction: WindDirection.neutral,
-        startedHalfwayAcross: startingPosition >= halfOfWidth,
+        direction: startPosition >= width ? WindDirection.blowLeft : WindDirection.blowRight
     };
 };
 
 export const updateFlakePosition = (flake: Flake, state: BlizzardState): void => {
-
     /**
      * If the flake y position is greater than the height of the canvas then
      * reset the flake to the top of the canvas
      */
     if (flake.y >= state.height) {
         flake.y = 0;
+        flake.x = random(0, state.width, true);
     }
-
-    /**
-     * Default the wind direction to be neutral
-     */
-    flake.direction = WindDirection.neutral;
 
     /**
      * If the flake goes off the screen to the right then
      * instruct the wind to force the flake back to the left
      */
     if (flake.x >= state.width) {
-        flake.direction = WindDirection.left;
+        flake.direction = WindDirection.blowLeft;
     }
 
     /**
@@ -51,7 +43,7 @@ export const updateFlakePosition = (flake: Flake, state: BlizzardState): void =>
      * instruct the wind to force the flake back to the right
      */
     if (flake.x <= 0) {
-        flake.direction = WindDirection.right;
+        flake.direction = WindDirection.blowRight;
     }
 
     const newPositionBasedOnWind = calculateWind(flake);
@@ -60,25 +52,18 @@ export const updateFlakePosition = (flake: Flake, state: BlizzardState): void =>
      * Depending on how the wind is the x value can be configured
      */
     switch (flake.direction) {
-        case WindDirection.left:
-            flake.x -= newPositionBasedOnWind * 10;
+        case WindDirection.blowLeft:
+            flake.x -= newPositionBasedOnWind;
             break;
-        case WindDirection.right:
-            flake.x += newPositionBasedOnWind * 10;
-            break;
-        case WindDirection.neutral:
-            if (flake.startedHalfwayAcross) {
-                flake.x -= newPositionBasedOnWind;
-            } else {
-                flake.x += newPositionBasedOnWind;
-            }
+        case WindDirection.blowRight:
+            flake.x += newPositionBasedOnWind;
             break;
     }
 
     /**
      * Update the y position based on the gravity speed of the flake
      */
-    flake.y += flake.gravity * flake.wind;
+    flake.y += flake.weight * flake.wind;
 };
 
 const calculateWind = (flake: Flake): number => {
@@ -89,7 +74,7 @@ const calculateWind = (flake: Flake): number => {
         Math.cos(flake.wind),
         Math.sin(flake.wind),
         Math.tan(flake.wind),
-        Math.pow(flake.gravity, 2)
+        Math.pow(flake.weight, 2)
     ];
 
     /**
