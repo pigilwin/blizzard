@@ -5,3 +5,8 @@ export const random = (min: number, max: number, round: boolean): number => {
     }
     return generatedNumber; 
 };
+
+export const getSecondsSinceEpoch = () => {
+    const time = (new Date()).getTime();
+    return Math.floor(time / 1000);
+}
