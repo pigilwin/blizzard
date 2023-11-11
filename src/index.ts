@@ -1,12 +1,13 @@
-import {random} from './helpers';
-import {initialiseFlake, updateFlakePosition} from './flake';
-import {canvasId, createCanvasElement} from './canvas';
-import { BlizzardConfiguration, BlizzardState, Flake } from './types';
+import { random } from './helpers';
+import { Flake, initialiseFlake } from './flake';
+import { canvasId, createCanvasElement } from './canvas';
+import { BlizzardConfiguration, BlizzardState } from './types';
 
 const defaultConfiguration: BlizzardConfiguration = {
     flakeCount: 100,
     maxFlakeSize: 5,
-    windSpeed: 3
+    windSpeed: 3,
+    stickyCount: null
 };
 
 export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = defaultConfiguration): void => {
@@ -30,8 +31,8 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         height: canvas.height,
         width: canvas.width,
         flakes: [],
-        tenPercentOfWidth: canvas.width / 10,
-        windSpeed: config.windSpeed
+        windSpeed: config.windSpeed,
+        stickyCount: config.stickyCount
     };
     state.flakes = createFlakes(config, state);
 
@@ -46,7 +47,7 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         canvas.width = state.width;
     });
 
-    const loop = () => {
+    const onAnimationFrame = () => {
         /**
          * Clear the canvas
          */
@@ -57,14 +58,17 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
             state.height
         );
 
-        for (const flake of state.flakes){
+        for (const flake of state.flakes) {
+
             /**
-             * Update the current flake position in the iteration
+             * Update the flake properties
              */
-            updateFlakePosition(
-                flake,
-                state
+            flake.update(
+                state.width,
+                state.height,
+                config.stickyCount
             );
+
             /**
              * Draw the flake on the canvas
              */
@@ -74,15 +78,13 @@ export const initialiseBlizzard = (userRequestedConfig: BlizzardConfiguration = 
         /**
          * Register the next frame
          */
-        requestAnimationFrame(() => {
-            loop();
-        });
+        window.requestAnimationFrame(onAnimationFrame);
     };
 
     /**
      * Initialise the main loop
      */
-    loop();
+    window.requestAnimationFrame(onAnimationFrame);
 };
 
 const createFlakes = (config: BlizzardConfiguration, state: BlizzardState): Array<Flake> => {
@@ -91,8 +93,8 @@ const createFlakes = (config: BlizzardConfiguration, state: BlizzardState): Arra
         flakes.push(
             initialiseFlake(
                 state.width,
-                config.maxFlakeSize,
-                state.windSpeed
+                state.windSpeed,
+                random(1, config.maxFlakeSize, false),
             )
         );
     }
