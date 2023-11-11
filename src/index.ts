@@ -103,8 +103,8 @@ const drawFlake = (context: CanvasRenderingContext2D, flake: Flake) => {
     context.font = '2em serif';
     context.beginPath();
     context.arc(
-        flake.x,
-        flake.y,
+        flake.location.x,
+        flake.location.y,
         flake.size,
         0,
         2 * Math.PI,

@@ -16,9 +16,20 @@ export interface BlizzardConfiguration {
     windSpeed?: number;
 }
 
+/**
+ * What direction can the wind blow
+ */
 export enum WindDirection {
     blowLeft,
     blowRight
+}
+
+/**
+ * A vector representing a coordinate on a 2d plane
+ */
+export interface Vector2d {
+    x: number;
+    y: number;
 }
 
 /**
@@ -57,13 +68,9 @@ export interface BlizzardState {
  */
 export interface Flake {
     /**
-     * The location within the canvas on the horizontal plane
+     * A vector representing a coordinate on a 2d plane
      */
-    x: number;
-    /**
-     * The location within the canvas on the vertical plane
-     */
-    y: number;
+    location: Vector2d;
     /**
      * The current wind affecting the flake speed
      */

@@ -11,8 +11,10 @@ export const initialiseFlake = (
     const half = width / 2;
     const startPosition = random(0, width, true);
     return {
-        x: startPosition,
-        y: 0,
+        location: {
+            x: startPosition,
+            y: 0
+        },
         wind: windSpeed,
         weight: random(3, maxWeight, false) / maxWeight,
         size: random(1, maxFlakeSize, false),
@@ -25,16 +27,16 @@ export const updateFlakePosition = (flake: Flake, state: BlizzardState): void =>
      * If the flake y position is greater than the height of the canvas then
      * reset the flake to the top of the canvas
      */
-    if (flake.y >= state.height) {
-        flake.y = 0;
-        flake.x = random(0, state.width, true);
+    if (flake.location.y >= state.height) {
+        flake.location.y = 0;
+        flake.location.x = random(0, state.width, true);
     }
 
     /**
      * If the flake goes off the screen to the right then
      * instruct the wind to force the flake back to the left
      */
-    if (flake.x >= state.width) {
+    if (flake.location.x >= state.width) {
         flake.direction = WindDirection.blowLeft;
     }
 
@@ -42,7 +44,7 @@ export const updateFlakePosition = (flake: Flake, state: BlizzardState): void =>
      * If the flake goes off the screen to the left then
      * instruct the wind to force the flake back to the right
      */
-    if (flake.x <= 0) {
+    if (flake.location.x <= 0) {
         flake.direction = WindDirection.blowRight;
     }
 
@@ -53,17 +55,17 @@ export const updateFlakePosition = (flake: Flake, state: BlizzardState): void =>
      */
     switch (flake.direction) {
         case WindDirection.blowLeft:
-            flake.x -= newPositionBasedOnWind;
+            flake.location.x -= newPositionBasedOnWind;
             break;
         case WindDirection.blowRight:
-            flake.x += newPositionBasedOnWind;
+            flake.location.x += newPositionBasedOnWind;
             break;
     }
 
     /**
      * Update the y position based on the gravity speed of the flake
      */
-    flake.y += flake.weight * flake.wind;
+    flake.location.y += flake.weight * flake.wind;
 };
 
 const calculateWind = (flake: Flake): number => {
